@@ -1,3 +1,9 @@
+:root {
+  --primary-color: #00B0FF;
+  /* --bg-color: rgba(244, 245, 250, 1); */
+  --bg-color: #f3f7fe;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +41,80 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* LOGIN + REGISTER*/
+.bg-color {
+  background-color: var(--bg-color);
+}
+.btn-bg {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  border: transparent;
+  border-radius: 5px;
+  transition: ease 0.3s ease;
+  height: 40px;
+  font-size: 16px;
+}
+
+.btn-bg:hover, .btn-bg:focus {
+  opacity: 0.8;
+}
+
+.login-form {
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  min-height: 60vh;
+  min-width: 500px;
+  padding: 50px 40px;
+  
+}
+
+.register-form {
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  min-height: 80vh;
+  min-width: 500px;
+  padding: 40px;
+  
+}
+.login-form label,
+.register-form label {
+  font-weight: 500;
+}
+
+.login-form .form-control,
+.register-form .form-control {
+  font-size: 14px;
+}
+
+.login-form .form-control:focus, 
+.register-form .form-control:focus{
+  border: 1px solid var(--primary-color);
+  box-shadow: inset 0px 0px;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.link:hover {
+  opacity: 0.8;
+}
+
+.register-form .form-select {
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.register-form .form-select:focus {
+  border: 1px solid var(--primary-color);
+  box-shadow: inset 0px 0px;
 }
