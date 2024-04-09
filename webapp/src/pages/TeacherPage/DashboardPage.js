@@ -1,5 +1,6 @@
 import React from 'react'
-import TeacherDashboard from '../../components/Teacher/TeacherDashboard'
+import TeacherDashboard from '../../components/Teacher/TeacherDashboard';
+
 const TeacherDashboardPage = () => {
   return (
     <div>
