@@ -1,0 +1,18 @@
+const getAllStudentsQuery = `
+    SELECT s.student_id, u.username, u.email, s.student_code, s.student_class, s.gender, u.phone
+    FROM users u
+    INNER JOIN students s ON u.user_id = s.user_id`;
+
+const deleteStudentQuery = 'DELETE FROM students WHERE student_id = $1';
+
+const getStudentQuery = `
+    SELECT s.student_id, u.username, u.email, s.student_code, s.student_class, s.gender, u.phone
+    FROM users u
+    INNER JOIN students s ON u.user_id = s.user_id
+    WHERE s.student_id = $1`;
+
+module.exports = {
+  getAllStudentsQuery,
+  deleteStudentQuery,
+  getStudentQuery
+};

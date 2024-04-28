@@ -20,6 +20,24 @@ const getAllTeachers = async (req, res) => {
   }
 };
 
+const getTeacher = async (req, res) => {
+  const teacherId = req.params.teacherId;
+  try {
+    const result = await pool.query(teacherQueries.getTeacherQuery, [
+      teacherId,
+    ]);
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).send('Teacher not found');
+    }
+  } catch (error) {
+    console.error('Error retrieving student:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
 const deleteTeacher = async (req, res) => {
   const teacherId = req.params.teacherId;
 
@@ -127,6 +145,7 @@ const addTeachersFromFile = async (req, res) => {
 
 module.exports = {
   getAllTeachers,
+  getTeacher,
   deleteTeacher,
   updateInfoTeacher,
   addTeachersFromFile,
