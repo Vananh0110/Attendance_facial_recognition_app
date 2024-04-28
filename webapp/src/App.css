@@ -265,22 +265,6 @@ a.sidebar-link:hover {
     transition: all .2s ease-out;
 }
 
-.sidebar-item span[title]:before {
-  content: attr(title);
-  position: absolute;
-  visibility: hidden;
-  background-color: black;
-  color: white;
-  text-align: center;
-  padding: 5px 10px;
-  border-radius: 5px;
-  z-index: 1;
-}
-
-.sidebar-item span[title]:hover:before {
-  visibility: visible;
-}
-
 .username {
   color: var(--text-gray);
   font-weight: 600;

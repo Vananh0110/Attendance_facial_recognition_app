@@ -87,31 +87,31 @@ const Layout = ({ children }) => {
       <div className="wrapper">
         <aside id="sidebar">
           <ul className="sidebar-nav">
-            <li className="sidebar-item" title="Dashboard">
-              <a href="#" className="sidebar-link">
+            <li className="sidebar-item">
+              <a href="#" className="sidebar-link" data-bs-toggle="tooltip" title="Dashboard">
                 <LayoutDashboard className="icon" />
                 <span>Dashboard</span>
               </a>
             </li>
-            <li className="sidebar-item" title="Teachers">
+            <li className="sidebar-item" data-bs-toggle="tooltip" title="Teachers">
               <a href="#" className="sidebar-link">
                 <GraduationCap className="icon" />
                 <span>Teachers</span>
               </a>
             </li>
-            <li className="sidebar-item" title="Students">
+            <li className="sidebar-item" data-bs-toggle="tooltip" title="Students">
               <a href="#" className="sidebar-link">
                 <Users className="icon" />
                 <span>Students</span>
               </a>
             </li>
-            <li className="sidebar-item" title="Classes">
+            <li className="sidebar-item" data-bs-toggle="tooltip" title="Classes">
               <a href="#" className="sidebar-link">
                 <Building className="icon" />
                 <span>Classes</span>
               </a>
             </li>
-            <li className="sidebar-item" title="">
+            <li className="sidebar-item" data-bs-toggle="tooltip" title="Report">
               <a href="#" className="sidebar-link">
                 <Folder className="icon" />
                 <span>Report</span>

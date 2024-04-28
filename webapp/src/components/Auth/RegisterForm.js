@@ -56,7 +56,7 @@ const RegisterForm = () => {
         <span className="fw-light">Make your app management easy and fun!</span>
         <div className="mb-3 mt-4">
           <label for="username" className="mb-2">
-            Username:
+            Full name:
           </label>
           <input
             type="text"

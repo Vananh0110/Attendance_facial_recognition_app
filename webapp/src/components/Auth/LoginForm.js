@@ -34,8 +34,10 @@ const LoginForm = () => {
           break;
         case 2:
           setTimeout(() => navigate('/teacher/dashboard'), 1500);
+          break;
         case 3:
           setTimeout(() => navigate('/student/dashboard'), 1500);
+          break;
         default:
           navigate('/');
           break;
