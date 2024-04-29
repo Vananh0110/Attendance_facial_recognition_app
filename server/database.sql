@@ -56,14 +56,14 @@ CREATE TABLE classes (
     class_code VARCHAR(255) NOT NULL,
     course_id INT NOT NULL,
     date_start DATE NOT NULL,
-    date_finsish DATE NOT NULL,
+    date_finish DATE NOT NULL,
     day_of_week INT NOT NULL,
     time_start TIME NOT NULL,
     time_finish TIME NOT NULL,
     teacher_id INT NOT NULL,
     PRIMARY KEY (class_id),
     CONSTRAINT fk_class_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE SET NULL,
-    CONSTRAINT fk_class_course FOREIGN KEY (course_id) REFERENCES courses (course_id) ON DELETE SET NULL,
+    CONSTRAINT fk_class_course FOREIGN KEY (course_id) REFERENCES courses (course_id) ON DELETE SET NULL
 );
 
 CREATE TABLE student_class (
