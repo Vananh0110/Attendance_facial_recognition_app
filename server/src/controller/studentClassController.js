@@ -49,9 +49,20 @@ const deleteStudentFromClass = async (req, res) => {
         res.status(500).json({message: 'Internal server error'});
     }
 }
+
+const getAllStudentClass = async (req, res) => {
+    try {
+        const results = await pool.query(queries.getAllStudentClassQuery);
+        res.status(200).json(results.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
 module.exports = {
     addStudentToClass,
     deleteStudentFromClass,
     getClassesForStudent,
-    getStudentsInClass
+    getStudentsInClass,
+    getAllStudentClass
 }

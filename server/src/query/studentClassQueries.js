@@ -13,16 +13,19 @@ const getClassesForStudentQuery = `
 `;
 
 const getStudentsInClassQuery = `
-    SELECT s.student_id, u.user_id, u.username, st.student_code
+    SELECT student_class_id, s.student_id, u.user_id, u.username, st.student_code
     FROM student_class s 
     JOIN students st ON s.student_id = st.student_id
     JOIN users u ON st.user_id = u.user_id
     WHERE s.class_id = $1
 `;
 
+const getAllStudentClassQuery = 'SELECT * FROM student_class';
+
 module.exports = {
     addStudentToClassQuery,
     deleteStudentFromClassQuery,
     getClassesForStudentQuery,
-    getStudentsInClassQuery
+    getStudentsInClassQuery,
+    getAllStudentClassQuery
 };

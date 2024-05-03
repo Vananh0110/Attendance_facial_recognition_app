@@ -17,6 +17,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     phone VARCHAR(20),
+    avatar_url VARCHAR,
     PRIMARY KEY (user_id),
     CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE SET NULL    
 );
@@ -73,6 +74,16 @@ CREATE TABLE student_class (
     PRIMARY KEY (student_class_id),
     CONSTRAINT fk_sl_student FOREIGN KEY (student_id) REFERENCES students (student_id) ON DELETE SET NULL,
     CONSTRAINT fk_sl_class FOREIGN KEY (class_id) REFERENCES classes (class_id) ON DELETE SET NULL
+);
+
+CREATE TABLE attendance (
+    attendance_id INT GENERATED ALWAYS AS IDENTITY,
+    student_class_id INT NOT NULL,
+    date_attended DATE NOT NULL,
+    time_attended TIME NOT NULL,
+    status VARCHAR(10) NOT NULL,
+    PRIMARY KEY (attendance_id),
+    CONSTRAINT fk_attendance_student_class FOREIGN KEY (student_class_id) REFERENCES student_class (student_class_id) ON DELETE SET NULL
 );
 
 INSERT INTO roles(role_name)

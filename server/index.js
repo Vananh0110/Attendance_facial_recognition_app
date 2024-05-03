@@ -11,6 +11,7 @@ const studentRoute = require('./src/route/studentRoute');
 const courseRoute = require('./src/route/courseRoute');
 const classRoute = require('./src/route/classRoute');
 const studentClassRoute = require('./src/route/studentClassRoute');
+const attendanceRoute = require('./src/route/attendanceRoute');
 
 //middleware
 app.use(cors());
@@ -21,6 +22,7 @@ app.use('/student', studentRoute);
 app.use('/course', courseRoute);
 app.use('/class', classRoute);
 app.use('/studentClass', studentClassRoute);
+app.use('/attendance', attendanceRoute);
 
 app.use('/', (req, res) => {
     res.send('Attendance using facial recognition system _ Pham Van Anh');
