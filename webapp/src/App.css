@@ -4,6 +4,7 @@
   --bg-color: #f3f7fe;
   --text-gray: #4b5563;
   --border-color: #eceaea;
+  --secondary-color: #5dccff;
 }
 
 .App {
@@ -207,7 +208,7 @@ li {
     flex: 1 1 auto;
 }
 
-a.sidebar-link {
+.sidebar-link {
     padding: .625rem 1.625rem;
     color: var(--text-gray);
     display: block;
@@ -221,9 +222,14 @@ a.sidebar-link {
     margin-right: .75rem;
 }
 
-a.sidebar-link:hover {
-    background-color: var(--primary-color) ;
+.sidebar-link:hover {
+    background-color: var(--secondary-color) ;
     color: #ffffff;
+}
+
+.sidebar-link.active {
+  background-color: var(--primary-color) ;
+  color: #ffffff;
 }
 
 .sidebar-item {
@@ -273,6 +279,14 @@ a.sidebar-link:hover {
 .role {
   color: var(--text-gray);
   font-weight: 300;
+}
+
+.container-fluid-custom {
+  background-color: white;
+  min-height: 580px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px 40px;
 }
 
 

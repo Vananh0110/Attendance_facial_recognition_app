@@ -5,7 +5,11 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import TeacherDashboardPage from './pages/TeacherPage/DashboardPage';
 import StudentDashboardPage from './pages/StudentPage/DashboardPage';
-import AdminDashboardPage from './pages/AdminPage/DashboardPage';
+import AdminDashboardPage from './pages/AdminPage/Dashboard/DashboardPage';
+import TeacherManagementPage from './pages/AdminPage/Teacher/TeacherManagementPage';
+import StudentManagementPage from './pages/AdminPage/Student/StudentManagementPage';
+import ClassManagementPage from './pages/AdminPage/Class/ClassManagement';
+
 function App() {
   return (
     <BrowserRouter>
@@ -17,6 +21,9 @@ function App() {
 
           {/* Admin */}
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="/admin/teachers" element={<TeacherManagementPage/>}/>
+          <Route path="/admin/students" element={<StudentManagementPage/>}/>
+          <Route path="/admin/classes" element={<StudentManagementPage/>}/>
 
           {/* Teacher */}
           <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
