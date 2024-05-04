@@ -33,7 +33,8 @@ const deleteStudent = async (req, res) => {
 
 const updateInfoStudent = async (req, res) => {
   const studentId = req.params.studentId;
-  const { username, phone, gender, student_class, student_code } = req.body;
+  const { username, phone, gender, student_class, student_code, email } =
+    req.body;
 
   const client = await pool.connect();
   try {
@@ -44,8 +45,8 @@ const updateInfoStudent = async (req, res) => {
     );
     const userId = result.rows[0].user_id;
     await client.query(
-      'UPDATE users SET username = $1, phone = $2 WHERE user_id = $3',
-      [username, phone, userId]
+      'UPDATE users SET username = $1, phone = $2, email = $3 WHERE user_id = $4',
+      [username, phone, email, userId]
     );
     await client.query(
       'UPDATE students SET student_code = $1, student_class = $2, gender = $3 WHERE user_id = $4',
@@ -148,11 +149,48 @@ const addStudentsFromFile = async (req, res) => {
   }
 };
 
+const addStudent = async (req, res) => {
+  const { username, phone, email, student_code, student_class, gender } =
+    req.body;
+  const defaultPassword = 'student123';
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
+  const roleStudentId = 3;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const user = await client.query(userQueries.userInsertQuery, [
+      username,
+      email,
+      phone,
+      roleStudentId,
+      hashedPassword,
+    ]);
+
+    const userId = user.rows[0].user_id;
+    await client.query(
+      'INSERT INTO students (user_id, student_code, student_class, gender) VALUES ($1, $2, $3, $4)',
+      [userId, student_code, student_class, gender]
+    );
+    await client.query('COMMIT');
+    res.status(200).send('Student added successfully.');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error during transaction:', error);
+    res.status(500).send('Failed to add student');
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   getAllStudents,
   deleteStudent,
   updateInfoStudent,
   getStudent,
   addStudentsFromFile,
+  addStudent,
   upload,
 };

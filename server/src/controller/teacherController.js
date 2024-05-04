@@ -37,7 +37,6 @@ const getTeacher = async (req, res) => {
   }
 };
 
-
 const deleteTeacher = async (req, res) => {
   const teacherId = req.params.teacherId;
 
@@ -52,7 +51,7 @@ const deleteTeacher = async (req, res) => {
 
 const updateInfoTeacher = async (req, res) => {
   const teacherId = req.params.teacherId;
-  const { username, phone } = req.body;
+  const { username, phone, email } = req.body;
 
   const client = await pool.connect();
   try {
@@ -63,8 +62,8 @@ const updateInfoTeacher = async (req, res) => {
     );
     const userId = result.rows[0].user_id;
     await client.query(
-      'UPDATE users SET username = $1, phone = $2 WHERE user_id = $3',
-      [username, phone, userId]
+      'UPDATE users SET username = $1, phone = $2, email = $3 WHERE user_id = $4',
+      [username, phone, email, userId]
     );
     await client.query('COMMIT');
     res
@@ -143,11 +142,45 @@ const addTeachersFromFile = async (req, res) => {
   }
 };
 
+const addTeacher = async (req, res) => {
+  const { username, phone, email } = req.body;
+  const defaultPassword = 'teacher123';
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
+  const roleTeacherId = 2;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const user = await client.query(userQueries.userInsertQuery, [
+      username,
+      email,
+      phone,
+      roleTeacherId,
+      hashedPassword,
+    ]);
+
+    const userId = user.rows[0].user_id;
+    await client.query('INSERT INTO teachers (user_id) VALUES ($1)', [userId]);
+    await client.query('COMMIT');
+    res.status(200).send('Teacher added successfully.');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error during transaction:', error);
+    res.status(500).send('Failed to add teacher');
+
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   getAllTeachers,
   getTeacher,
   deleteTeacher,
   updateInfoTeacher,
   addTeachersFromFile,
+  addTeacher,
   upload,
 };
