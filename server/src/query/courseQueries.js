@@ -1,4 +1,4 @@
-const getAllCoursesQuery = 'SELECT * FROM courses';
+const getAllCoursesQuery = 'SELECT * FROM courses ORDER BY course_id ASC';
 
 const getCourseQuery = 'SELECT * FROM courses WHERE course_id = $1'
 

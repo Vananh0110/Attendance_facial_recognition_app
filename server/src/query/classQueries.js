@@ -1,4 +1,4 @@
-const getAllClassesQuery = 'SELECT * FROM classes';
+const getAllClassesQuery = 'SELECT * FROM classes cl JOIN courses c ON cl.course_id = c.course_id ';
 
 const getClassQuery = 'SELECT * FROM classes WHERE class_id = $1';
 
