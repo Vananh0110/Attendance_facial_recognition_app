@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
 import axios from '../../../api/axios';
+import * as XLSX from 'xlsx';
 import { Button, Table, Upload, message, Tooltip, Input, Modal } from 'antd';
 import {
   UploadOutlined,
   EditOutlined,
   DeleteOutlined,
+  ExportOutlined
 } from '@ant-design/icons';
 import AddStudentModal from '../../../components/Admin/Student/AddStudentModal';
 import EditStudentModal from '../../../components/Admin/Student/EditStudentModal';
@@ -121,6 +123,14 @@ const StudentManagementPage = () => {
       });
   };
 
+  const handleExport = () => {
+    const ws = XLSX.utils.json_to_sheet(students);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Students');
+    const exportFileName = 'StudentList.xlsx';
+    XLSX.writeFile(wb, exportFileName);
+  };
+
   const getColumns = () => [
     {
       title: 'ID',
@@ -185,7 +195,7 @@ const StudentManagementPage = () => {
       <div className="container-fluid container-fluid-custom">
         <h4>Students</h4>
         <div className="d-flex justify-content-between mt-5 mb-4">
-          <div>
+          <div className="d-flex">
             <Button
               type="primary"
               className="me-2"
@@ -200,6 +210,13 @@ const StudentManagementPage = () => {
                 </Button>
               </Upload>
             </Tooltip>
+            <Button
+              icon={<ExportOutlined />}
+              onClick={handleExport}
+              style={{ marginLeft: 8 }}
+            >
+              Export to Excel
+            </Button>
           </div>
           <div>
             <Input.Search
