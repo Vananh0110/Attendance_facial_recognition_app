@@ -15,7 +15,6 @@ const EditCourseModal = ({ visible, onClose, course, onUpdate }) => {
         console.log('Validate Failed:', info);
       });
   };
-
   return (
     <Modal
       title="Edit Course"

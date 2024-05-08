@@ -9,6 +9,7 @@ import {
   Users,
   GraduationCap,
   Building,
+  NotepadText
 } from 'lucide-react';
 import '../../App.css';
 
@@ -138,6 +139,21 @@ const Layout = ({ children }) => {
                 id="students-tooltip"
                 place="right"
                 content="Students"
+              />
+            </li>
+            <li className="sidebar-item">
+              <NavLink
+                to="/admin/courses"
+                activeClassName="active"
+                className="sidebar-link"
+              >
+                <NotepadText className="icon" data-tooltip-id="courses-tooltip" />
+                <span>Courses</span>
+              </NavLink>
+              <ReactTooltip
+                id="courses-tooltip"
+                place="right"
+                content="Courses"
               />
             </li>
             <li className="sidebar-item">
