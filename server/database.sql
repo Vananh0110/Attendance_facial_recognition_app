@@ -78,7 +78,7 @@ CREATE TABLE student_class (
 
 CREATE TABLE attendance (
     attendance_id INT GENERATED ALWAYS AS IDENTITY,
-    student_class_id INT NOT NULL,
+    student_class_id INT ,
     date_attended DATE NOT NULL,
     time_attended TIME NOT NULL,
     status VARCHAR(10) NOT NULL,

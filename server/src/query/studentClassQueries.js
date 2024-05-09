@@ -1,6 +1,8 @@
-const addStudentToClassQuery = 'INSERT INTO student_class (student_id, class_id) VALUES ($1, $2) RETURNING *';
+const addStudentToClassQuery =
+  'INSERT INTO student_class (student_id, class_id) VALUES ($1, $2) RETURNING *';
 
-const deleteStudentFromClassQuery = 'DELETE FROM student_class WHERE student_class_id = $1 RETURNING *'
+const deleteStudentFromClassQuery =
+  'DELETE FROM student_class WHERE student_class_id = $1 RETURNING *';
 
 const getClassesForStudentQuery = `
         SELECT cl.class_id, cl.class_code, cl.course_id, c.course_code, c.course_name, day_of_week, time_start, date_start, date_finish, cl.teacher_id, u.user_id, u.username
@@ -13,19 +15,20 @@ const getClassesForStudentQuery = `
 `;
 
 const getStudentsInClassQuery = `
-    SELECT student_class_id, s.student_id, u.user_id, u.username, st.student_code
+    SELECT student_class_id, s.student_id, st.student_class, u.user_id, u.username, u.email, st.student_code, u.avatar_url, st.gender
     FROM student_class s 
     JOIN students st ON s.student_id = st.student_id
     JOIN users u ON st.user_id = u.user_id
     WHERE s.class_id = $1
+    ORDER BY u.username ASC
 `;
 
 const getAllStudentClassQuery = 'SELECT * FROM student_class';
 
 module.exports = {
-    addStudentToClassQuery,
-    deleteStudentFromClassQuery,
-    getClassesForStudentQuery,
-    getStudentsInClassQuery,
-    getAllStudentClassQuery
+  addStudentToClassQuery,
+  deleteStudentFromClassQuery,
+  getClassesForStudentQuery,
+  getStudentsInClassQuery,
+  getAllStudentClassQuery,
 };

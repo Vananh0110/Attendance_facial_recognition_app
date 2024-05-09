@@ -3,12 +3,22 @@ import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
 import axios from '../../../api/axios';
 import * as XLSX from 'xlsx';
-import { Button, Table, Upload, message, Tooltip, Input, Modal } from 'antd';
+import {
+  Button,
+  Table,
+  Upload,
+  message,
+  Tooltip,
+  Input,
+  Modal,
+  Avatar,
+} from 'antd';
 import {
   UploadOutlined,
   EditOutlined,
   DeleteOutlined,
-  ExportOutlined
+  ExportOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import EditTeacherModal from '../../../components/Admin/Teacher/EditTeacherModal';
 import AddTeacherModal from '../../../components/Admin/Teacher/AddTeacherModal';
@@ -133,6 +143,22 @@ const TeacherManagementPage = () => {
       title: 'ID',
       dataIndex: 'teacher_id',
       key: 'teacher_id',
+    },
+    {
+      title: 'Image',
+      key: 'avatar',
+      render: (text, record) => (
+        <Avatar
+          src={record.avatar_url ? record.avatar_url : undefined}
+          alt="avatar"
+          size={50}
+          style={{ verticalAlign: 'middle' }}
+          icon={<UserOutlined />}
+          onError={() => {
+            return false;
+          }}
+        />
+      ),
     },
     {
       title: 'Name',

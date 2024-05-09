@@ -3,12 +3,22 @@ import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
 import axios from '../../../api/axios';
 import * as XLSX from 'xlsx';
-import { Button, Table, Upload, message, Tooltip, Input, Modal } from 'antd';
+import {
+  Button,
+  Table,
+  Upload,
+  message,
+  Tooltip,
+  Input,
+  Modal,
+  Avatar,
+} from 'antd';
 import {
   UploadOutlined,
   EditOutlined,
   DeleteOutlined,
-  ExportOutlined
+  ExportOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import AddStudentModal from '../../../components/Admin/Student/AddStudentModal';
 import EditStudentModal from '../../../components/Admin/Student/EditStudentModal';
@@ -138,6 +148,22 @@ const StudentManagementPage = () => {
       key: 'student_id',
     },
     {
+      title: 'Avatar',
+      key: 'avatar',
+      render: (text, record) => (
+        <Avatar
+          src={record.avatar_url ? record.avatar_url : undefined}
+          alt="avatar"
+          size={50}
+          style={{ verticalAlign: 'middle' }}
+          icon={<UserOutlined />}
+          onError={() => {
+            return false;
+          }}
+        />
+      ),
+    },
+    {
       title: 'Name',
       dataIndex: 'username',
       key: 'username',
@@ -220,7 +246,7 @@ const StudentManagementPage = () => {
           </div>
           <div>
             <Input.Search
-              placeholder="Search by name, email, phone, student code, clas or gender"
+              placeholder="Search by name, email, phone, student code, class or gender"
               onChange={handleSearch}
               style={{ width: 500 }}
             />

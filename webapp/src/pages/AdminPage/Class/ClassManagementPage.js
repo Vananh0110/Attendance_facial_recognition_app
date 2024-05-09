@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
 import axios from '../../../api/axios';
@@ -31,6 +32,8 @@ const ClassManagementPage = () => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [filteredClasses, setFilteredClasses] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchClasses();
@@ -133,6 +136,10 @@ const ClassManagementPage = () => {
     XLSX.writeFile(wb, exportFileName);
   };
 
+  const navigateToClassDetail = (classId) => {
+    navigate(`/admin/classes/classDetail/${classId}`);
+  };
+
   const getColumns = () => [
     { title: 'ID', dataIndex: 'class_id', key: 'class_id' },
     { title: 'Class Code', dataIndex: 'class_code', key: 'class_code' },
@@ -168,14 +175,20 @@ const ClassManagementPage = () => {
             <Button
               icon={<EditOutlined />}
               style={{ marginRight: 8 }}
-              onClick={() => handleEdit(record)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEdit(record);
+              }}
             />
           </Tooltip>
           <Tooltip title="Delete">
             <Button
               icon={<DeleteOutlined />}
               danger
-              onClick={() => handleDelete(record.class_id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(record.class_id);
+              }}
             />
           </Tooltip>
         </div>
@@ -187,30 +200,45 @@ const ClassManagementPage = () => {
     <Table
       columns={getColumns()}
       dataSource={filteredClasses.map((cls, index) => ({ ...cls, key: index }))}
+      onRow={(record) => ({
+        onClick: () => {
+          navigateToClassDetail(record.class_id);
+        },
+      })}
+      rowClassName="clickable-row"
     />
   );
 
   const renderCards = () => (
     <Row gutter={16}>
       {filteredClasses.map((cls) => (
-        <Col key={cls.class_id} span={8}>
+        <Col
+          key={cls.class_id}
+          span={8}
+          onClick={() => navigateToClassDetail(cls.class_id)}
+        >
           <Card
             hoverable
             title={`${cls.class_code} (${cls.course_code} - ${cls.course_name})`}
-            extra={<a href="#">More</a>}
             style={{ marginBottom: 16, borderRadius: '8px' }}
             actions={[
               <Tooltip title="Edit">
                 <Button
                   icon={<EditOutlined />}
-                  onClick={() => handleEdit(cls)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(cls);
+                  }}
                   style={{ border: 'none', color: 'green' }}
                 />
               </Tooltip>,
               <Tooltip title="Delete">
                 <Button
                   icon={<DeleteOutlined />}
-                  onClick={() => handleDelete(cls.class_id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(cls.class_id);
+                  }}
                   style={{ border: 'none', color: 'red' }}
                 />
               </Tooltip>,

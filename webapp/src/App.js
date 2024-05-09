@@ -10,6 +10,8 @@ import TeacherManagementPage from './pages/AdminPage/Teacher/TeacherManagementPa
 import StudentManagementPage from './pages/AdminPage/Student/StudentManagementPage';
 import ClassManagementPage from './pages/AdminPage/Class/ClassManagementPage';
 import CourseManagementPage from './pages/AdminPage/Course/CourseManagementPage';
+import ClassDetailPage from './pages/AdminPage/StudentClass/ClassDetailPage';
+
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +27,7 @@ function App() {
           <Route path="/admin/students" element={<StudentManagementPage/>}/>
           <Route path="/admin/courses" element={<CourseManagementPage/>}/>
           <Route path="/admin/classes" element={<ClassManagementPage/>}/>
+          <Route path="admin/classes/classDetail/:classId" element={<ClassDetailPage/>} />
 
           {/* Teacher */}
           <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
