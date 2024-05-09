@@ -15,7 +15,12 @@ import {
   Modal,
   Input,
 } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import * as XLSX from 'xlsx';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExportOutlined,
+} from '@ant-design/icons';
 import EditClassModal from '../../../components/Admin/Class/EditClassModal';
 import AddClassModal from '../../../components/Admin/Class/AddClassModal';
 
@@ -120,6 +125,14 @@ const ClassManagementPage = () => {
     setSearchText(e.target.value);
   };
 
+  const handleExport = () => {
+    const ws = XLSX.utils.json_to_sheet(classes);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'classes');
+    const exportFileName = 'ClassList.xlsx';
+    XLSX.writeFile(wb, exportFileName);
+  };
+
   const getColumns = () => [
     { title: 'ID', dataIndex: 'class_id', key: 'class_id' },
     { title: 'Class Code', dataIndex: 'class_code', key: 'class_code' },
@@ -185,7 +198,7 @@ const ClassManagementPage = () => {
             hoverable
             title={`${cls.class_code} (${cls.course_code} - ${cls.course_name})`}
             extra={<a href="#">More</a>}
-            style={{ marginBottom: 16, borderRadius: '8px'}}
+            style={{ marginBottom: 16, borderRadius: '8px' }}
             actions={[
               <Tooltip title="Edit">
                 <Button
@@ -203,12 +216,15 @@ const ClassManagementPage = () => {
               </Tooltip>,
             ]}
           >
-            <p><b>Day:</b> {dayOfWeekAsText(cls.day_of_week)}</p>
+            <p>
+              <b>Day:</b> {dayOfWeekAsText(cls.day_of_week)}
+            </p>
             <p>
               <b>Time:</b> {cls.time_start} - {cls.time_finish}
             </p>
             <p>
-              <b>Date:</b> {formatDate(cls.date_start)} - {formatDate(cls.date_finish)}
+              <b>Date:</b> {formatDate(cls.date_start)} -{' '}
+              {formatDate(cls.date_finish)}
             </p>
           </Card>
         </Col>
@@ -231,9 +247,18 @@ const ClassManagementPage = () => {
           </div>
         </div>
         <div className="d-flex justify-content-between mt-4 mb-4">
-          <Button type="primary" onClick={() => setAddModalVisible(true)}>
-            Add Class
-          </Button>
+          <div>
+            <Button type="primary" onClick={() => setAddModalVisible(true)}>
+              Add Class
+            </Button>
+            <Button
+              icon={<ExportOutlined />}
+              onClick={handleExport}
+              style={{ marginLeft: 8 }}
+            >
+              Export to Excel
+            </Button>
+          </div>
           <div>
             <Input.Search
               placeholder="Search by class code, course code or course name"

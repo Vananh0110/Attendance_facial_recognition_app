@@ -9,16 +9,21 @@ import {
   TimePicker,
   Row,
   Col,
+  message,
 } from 'antd';
 import moment from 'moment';
 import axios from '../../../api/axios';
-
+import { EditOutlined } from '@ant-design/icons';
+import AddCourseModal from '../Course/AddCourseModal';
+import AddTeacherModal from '../Teacher/AddTeacherModal';
 const { Option } = Select;
 
 const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
   const [form] = Form.useForm();
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [showAddCourseModal, setShowAddCourseModal] = useState(false);
+  const [showAddTeacherModal, setShowAddTeacherModal] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -43,6 +48,30 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
     } catch (error) {
       console.error('Failed to fetch teachers:', error);
     }
+  };
+
+  const handleCreateNewCourse = (values) => {
+    axios
+      .post('/course', values)
+      .then(() => {
+        message.success('course added successfully');
+        fetchCourses();
+      })
+      .catch((error) => {
+        message.error('Failed to add course');
+      });
+  };
+
+  const handleCreateNewTeacher = (values) => {
+    axios
+      .post('/teacher', values)
+      .then(() => {
+        message.success('Teacher added successfully');
+        fetchTeachers();
+      })
+      .catch((error) => {
+        message.error('Failed to add teacher');
+      });
   };
 
   const handleSubmit = async () => {
@@ -102,12 +131,23 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
           label="Course"
           rules={[{ required: true, message: 'Please select a course!' }]}
         >
-          <Select placeholder="Select a course">
+          <Select
+            placeholder="Select a course"
+            onSelect={(value) => {
+              if (value === 'add_new_course') {
+                setShowAddCourseModal(true);
+              }
+            }}
+          >
             {courses.map((course) => (
               <Option key={course.course_id} value={course.course_id}>
                 {course.course_code} - {course.course_name}
               </Option>
             ))}
+            <Option key="add_new_course" value="add_new_course">
+              <EditOutlined className="me-3" />
+              Add New Course
+            </Option>
           </Select>
         </Form.Item>
         <Form.Item
@@ -115,12 +155,22 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
           label="Teacher"
           rules={[{ required: true, message: 'Please select a teacher!' }]}
         >
-          <Select placeholder="Select a teacher">
+          <Select
+            placeholder="Select a teacher"
+            onSelect={(value) => {
+              if (value === 'add_new_teacher') {
+                setShowAddTeacherModal(true);
+              }
+            }}
+          >
             {teachers.map((teacher) => (
               <Option key={teacher.teacher_id} value={teacher.teacher_id}>
                 {teacher.username}
               </Option>
             ))}
+            <Option key="add_new_teacher" value="add_new_teacher">
+              <EditOutlined className="me-3" /> Add New Teacher
+            </Option>
           </Select>
         </Form.Item>
         <Row gutter={16}>
@@ -188,6 +238,24 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
             <Option value={7}>Thứ Bảy</Option>
           </Select>
         </Form.Item>
+        <AddCourseModal
+          visible={showAddCourseModal}
+          onClose={() => setShowAddCourseModal(false)}
+          onCreate={(newCourse) => {
+            handleCreateNewCourse(newCourse);
+            form.setFieldsValue({ course_id: newCourse.course_id });
+            setShowAddCourseModal(false);
+          }}
+        />
+        <AddTeacherModal
+          visible={showAddTeacherModal}
+          onClose={() => setShowAddTeacherModal(false)}
+          onCreate={(newTeacher) => {
+            handleCreateNewTeacher(newTeacher);
+            form.setFieldsValue({ teacher_id: newTeacher.teacher_id });
+            setShowAddTeacherModal(false);
+          }}
+        />
       </Form>
     </Modal>
   );
