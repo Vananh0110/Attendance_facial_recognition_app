@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ErrorPage from './pages/ErrorPage';
 import LoginPage from './pages/LoginPage';
+import PrivateRoute from './components/PrivateRoute';
 import RegisterPage from './pages/RegisterPage';
 import TeacherDashboardPage from './pages/TeacherPage/DashboardPage';
 import StudentDashboardPage from './pages/StudentPage/DashboardPage';
@@ -17,29 +18,85 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={<Layout />}> */}
-          <Route index element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+        <Route index element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-          {/* Admin */}
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          <Route path="/admin/teachers" element={<TeacherManagementPage/>}/>
-          <Route path="/admin/students" element={<StudentManagementPage/>}/>
-          <Route path="/admin/courses" element={<CourseManagementPage/>}/>
-          <Route path="/admin/classes" element={<ClassManagementPage/>}/>
-          <Route path="admin/classes/classDetail/:classId" element={<ClassDetailPage/>} />
+        {/* Admin */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <PrivateRoute>
+              <AdminDashboardPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/teachers"
+          element={
+            <PrivateRoute>
+              <TeacherManagementPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/students"
+          element={
+            <PrivateRoute>
+              <StudentManagementPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/courses"
+          element={
+            <PrivateRoute>
+              <CourseManagementPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/classes"
+          element={
+            <PrivateRoute>
+              <ClassManagementPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="admin/classes/classDetail/:classId"
+          element={
+            <PrivateRoute>
+              <ClassDetailPage />
+            </PrivateRoute>
+          }
+        />
 
-          {/* Teacher */}
-          <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
+        {/* Teacher */}
+        <Route
+          path="/teacher/dashboard"
+          element={
+            <PrivateRoute>
+              <TeacherDashboardPage />
+            </PrivateRoute>
+          }
+        />
 
-          {/* Student */}
-          <Route path="/student/dashboard" element={<StudentDashboardPage />} />
-    
-          <Route path="*" element={<ErrorPage />} />
+        {/* Student */}
+        <Route
+          path="/student/dashboard"
+          element={
+            <PrivateRoute>
+              <StudentDashboardPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route path="*" element={<ErrorPage />} />
         {/* </Route> */}
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
 export default App;

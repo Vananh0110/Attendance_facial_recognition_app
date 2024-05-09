@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import {
   ChevronDown,
@@ -9,9 +9,11 @@ import {
   Users,
   GraduationCap,
   Building,
-  NotepadText
+  NotepadText,
 } from 'lucide-react';
 import '../../App.css';
+import { UserOutlined } from '@ant-design/icons';
+import { Avatar } from 'antd';
 
 const getRoleName = (roleId) => {
   switch (roleId) {
@@ -28,6 +30,8 @@ const getRoleName = (roleId) => {
 
 const Layout = ({ children }) => {
   const [userData, setUserData] = useState(null);
+
+  const navigate = useNavigate();
   useEffect(() => {
     const userData = JSON.parse(sessionStorage.getItem('user'));
     setUserData(userData);
@@ -47,6 +51,11 @@ const Layout = ({ children }) => {
     };
   }, []);
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('user');
+    navigate('/login');
+  };
+
   return (
     <>
       <nav className="navbar fixed-top">
@@ -59,6 +68,13 @@ const Layout = ({ children }) => {
           </div>
         </div>
         <div className="d-flex">
+          <div className="d-flex align-items-center">
+            <Avatar
+              src={userData?.avatar_url}
+              icon={!userData?.avatar_url && <UserOutlined />}
+              style={{ marginRight: 8 }}
+            />
+          </div>
           <div className="d-flex flex-column">
             <div className="username">{userData?.username}</div>
             <div className="role">{getRoleName(userData?.role_id)}</div>
@@ -79,7 +95,7 @@ const Layout = ({ children }) => {
                 </a>
               </li>
               <li>
-                <a className="dropdown-item" href="#">
+                <a className="dropdown-item" onClick={handleLogout}>
                   Sign out
                 </a>
               </li>
@@ -147,7 +163,10 @@ const Layout = ({ children }) => {
                 activeClassName="active"
                 className="sidebar-link"
               >
-                <NotepadText className="icon" data-tooltip-id="courses-tooltip" />
+                <NotepadText
+                  className="icon"
+                  data-tooltip-id="courses-tooltip"
+                />
                 <span>Courses</span>
               </NavLink>
               <ReactTooltip

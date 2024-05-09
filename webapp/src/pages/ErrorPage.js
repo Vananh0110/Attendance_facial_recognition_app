@@ -1,10 +1,19 @@
 import React from 'react';
-import ErrorImg from '../assets/images/404error.png';
+import { Result, Button } from 'antd';
+import { Link } from 'react-router-dom';
+
 const ErrorPage = () => {
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <img src={ErrorImg} alt="404 Error Image" className="img-fluid" />
-    </div>
+    <Result
+      status="404"
+      title="404"
+      subTitle="Sorry, the page you visited does not exist."
+      extra={
+        <Button type="primary">
+          <Link to="/">Back Home</Link>
+        </Button>
+      }
+    />
   );
 };
 

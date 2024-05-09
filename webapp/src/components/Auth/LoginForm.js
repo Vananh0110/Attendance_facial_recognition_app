@@ -24,6 +24,7 @@ const LoginForm = () => {
         user_id: response.data.user.user_id,
         username: response.data.user.username,
         email: response.data.user.email,
+        avatar_url: response.data.user.avatar_url,
         role_id: role_id,
       };
       sessionStorage.setItem('user', JSON.stringify(userData));
