@@ -220,7 +220,11 @@ const ClassManagementPage = () => {
           <Card
             hoverable
             title={`${cls.class_code} (${cls.course_code} - ${cls.course_name})`}
-            style={{ marginBottom: 16, borderRadius: '8px' }}
+            style={{
+              marginBottom: 16,
+              borderRadius: '8px',
+              borderColor: '#cdc9c9',
+            }}
             actions={[
               <Tooltip title="Edit">
                 <Button

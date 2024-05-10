@@ -12,6 +12,13 @@ const getClassQuery = `
         JOIN users u ON t.user_id = u.user_id
         WHERE cl.class_id = $1`;
 
+const getListClassesQuery = `
+        SELECT cl.class_id, cl.class_code, cl.course_id, c.course_code, c.course_name, cl.day_of_week, date_start, date_finish, time_start, time_finish, t.teacher_id, u.user_id, u.username FROM classes cl 
+        JOIN courses c ON cl.course_id = c.course_id
+        JOIN teachers t ON cl.teacher_id = t.teacher_id
+        JOIN users u ON t.user_id = u.user_id
+        WHERE cl.course_id = $1`;
+
 const addClassQuery =
   'INSERT INTO classes (class_code, course_id, date_start, date_finish, day_of_week, time_start, time_finish, teacher_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
 
@@ -26,4 +33,5 @@ module.exports = {
   addClassQuery,
   deleteClassQuery,
   updateClassQuery,
+  getListClassesQuery
 };

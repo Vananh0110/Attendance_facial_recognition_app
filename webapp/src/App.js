@@ -4,7 +4,7 @@ import ErrorPage from './pages/ErrorPage';
 import LoginPage from './pages/LoginPage';
 import PrivateRoute from './components/PrivateRoute';
 import RegisterPage from './pages/RegisterPage';
-import TeacherDashboardPage from './pages/TeacherPage/DashboardPage';
+import TeacherDashboard from './pages/TeacherPage/Dashboard/TeacherDashboard';
 import StudentDashboardPage from './pages/StudentPage/DashboardPage';
 import AdminDashboardPage from './pages/AdminPage/Dashboard/DashboardPage';
 import TeacherManagementPage from './pages/AdminPage/Teacher/TeacherManagementPage';
@@ -12,6 +12,13 @@ import StudentManagementPage from './pages/AdminPage/Student/StudentManagementPa
 import ClassManagementPage from './pages/AdminPage/Class/ClassManagementPage';
 import CourseManagementPage from './pages/AdminPage/Course/CourseManagementPage';
 import ClassDetailPage from './pages/AdminPage/StudentClass/ClassDetailPage';
+import ReportAttendancePage from './pages/AdminPage/Report/ReportAttendancePage';
+import ReportClassPage from './pages/AdminPage/Report/ReportClassPage';
+import ReportAttendanceDetail from './pages/AdminPage/Report/ReportAttendanceDetail';
+import StudentTeacherManagement from './pages/TeacherPage/Student/StudentTeacherManagement';
+import CourseTeacherManagement from './pages/TeacherPage/Course/CourseTeacherManagement';
+import ClassTeacherManagement from './pages/TeacherPage/Class/ClassTeacherManagement';
+import ScheduleTeacherManagement from './pages/TeacherPage/Schedule/ScheduleTeacherManagement';
 
 function App() {
   return (
@@ -63,11 +70,37 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/admin/reports"
+          element={
+            <PrivateRoute>
+              <ReportAttendancePage />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="admin/classes/classDetail/:classId"
           element={
             <PrivateRoute>
               <ClassDetailPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="admin/reports/:courseId/classes"
+          element={
+            <PrivateRoute>
+              <ReportClassPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="admin/reports/:courseId/classes/:classId/attendance"
+          element={
+            <PrivateRoute>
+              <ReportAttendanceDetail />
             </PrivateRoute>
           }
         />
@@ -77,7 +110,42 @@ function App() {
           path="/teacher/dashboard"
           element={
             <PrivateRoute>
-              <TeacherDashboardPage />
+              <TeacherDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/students"
+          element={
+            <PrivateRoute>
+              <StudentTeacherManagement />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/courses"
+          element={
+            <PrivateRoute>
+              <CourseTeacherManagement />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/classes"
+          element={
+            <PrivateRoute>
+              <ClassTeacherManagement />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/schedule"
+          element={
+            <PrivateRoute>
+              <ScheduleTeacherManagement />
             </PrivateRoute>
           }
         />
@@ -93,7 +161,6 @@ function App() {
         />
 
         <Route path="*" element={<ErrorPage />} />
-        {/* </Route> */}
       </Routes>
     </BrowserRouter>
   );
