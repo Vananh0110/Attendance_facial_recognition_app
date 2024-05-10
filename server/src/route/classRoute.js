@@ -8,5 +8,5 @@ router.get('/:classId', controller.getClass);
 router.post('/', controller.addClass);
 router.delete('/:classId', controller.deleteClass);
 router.put('/:classId', controller.updateClass);
-
+router.get('/listclasses/:courseId', controller.getListClasses)
 module.exports = router;

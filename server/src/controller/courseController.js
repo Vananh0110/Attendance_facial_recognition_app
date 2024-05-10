@@ -142,5 +142,5 @@ module.exports = {
   deleteCourse,
   updateCourse,
   addCoursesFromFile,
-  upload
+  upload,
 };

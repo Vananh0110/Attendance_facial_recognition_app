@@ -27,6 +27,17 @@ const getClass = async (req, res) => {
   }
 };
 
+const getListClasses = async (req, res) => {
+  const courseId = req.params.courseId;
+  try {
+    const results = await pool.query(queries.getListClassesQuery, [courseId]);
+    res.status(200).json(results.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const addClass = async (req, res) => {
   const {
     class_code,
@@ -97,7 +108,7 @@ const deleteClass = async (req, res) => {
 
   try {
     await pool.query(queries.deleteClassQuery, [classId]);
-    res.status(200).json({message: 'Class deleted successfully'})
+    res.status(200).json({ message: 'Class deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -110,4 +121,5 @@ module.exports = {
   addClass,
   updateClass,
   deleteClass,
+  getListClasses
 };
