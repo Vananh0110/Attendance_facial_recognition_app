@@ -5,7 +5,7 @@ const deleteStudentFromClassQuery =
   'DELETE FROM student_class WHERE student_class_id = $1 RETURNING *';
 
 const getClassesForStudentQuery = `
-        SELECT cl.class_id, cl.class_code, cl.course_id, c.course_code, c.course_name, day_of_week, time_start, date_start, date_finish, cl.teacher_id, u.user_id, u.username
+        SELECT cl.class_id, cl.class_code, cl.course_id, c.course_code, c.course_name, day_of_week, time_start, date_start, date_finish, cl.teacher_id, u.user_id, u.username, u.avatar_url
         FROM student_class s 
         JOIN classes cl ON s.class_id = cl.class_id
 		JOIN courses c ON cl.course_id = c.course_id

@@ -293,4 +293,48 @@ li {
   cursor: pointer;
 }
 
+/* Schedule's Calendar custom */
+/* CalendarStyles.css */
+.fc {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.25em;
+}
+
+.fc .fc-button {
+  background-color: transparent;
+  border: 1px solid #cdc9c9;
+  color: black;
+  font-size: 1em;
+}s
+
+.fc .fc-button:hover {
+  background-color: transparent;
+  color: #1677ff;
+  border-color: #1677ff;
+}
+
+.fc-col-header-cell-cushion {
+  font-weight: 400;
+  color: black;
+}
+
+.fc-daygrid-day-number {
+  color: black;
+}
+.fc-event {
+  color: black;
+  border: none;
+  
+}
+
+.fc-event, .fc-event-dot {
+  background-color: #e0f2f1;
+}
+
+.fc-day-today .fc-event {
+  background-color: #b2dfdb;
+}
 

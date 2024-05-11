@@ -19,7 +19,11 @@ import StudentTeacherManagement from './pages/TeacherPage/Student/StudentTeacher
 import CourseTeacherManagement from './pages/TeacherPage/Course/CourseTeacherManagement';
 import ClassTeacherManagement from './pages/TeacherPage/Class/ClassTeacherManagement';
 import ScheduleTeacherManagement from './pages/TeacherPage/Schedule/ScheduleTeacherManagement';
-
+import TeacherClassDetail from './pages/TeacherPage/StudentClass.js/TeacherClassDetail';
+import TeacherAttendancePage from './pages/TeacherPage/Attendance/TeacherAttendancePage';
+import TeacherAttendanceClassDetail from './pages/TeacherPage/Attendance/TeacherAttendanceClassDetail';
+import TraditionalAttendance from './pages/TeacherPage/Attendance/TraditionalAttendance';
+import QrCodeAttendance from './pages/TeacherPage/Attendance/QrCodeAttendance';
 function App() {
   return (
     <BrowserRouter>
@@ -33,7 +37,7 @@ function App() {
         <Route
           path="/admin/dashboard"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <AdminDashboardPage />
             </PrivateRoute>
           }
@@ -41,7 +45,7 @@ function App() {
         <Route
           path="/admin/teachers"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <TeacherManagementPage />
             </PrivateRoute>
           }
@@ -49,7 +53,7 @@ function App() {
         <Route
           path="/admin/students"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <StudentManagementPage />
             </PrivateRoute>
           }
@@ -57,7 +61,7 @@ function App() {
         <Route
           path="/admin/courses"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <CourseManagementPage />
             </PrivateRoute>
           }
@@ -65,7 +69,7 @@ function App() {
         <Route
           path="/admin/classes"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <ClassManagementPage />
             </PrivateRoute>
           }
@@ -74,7 +78,7 @@ function App() {
         <Route
           path="/admin/reports"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <ReportAttendancePage />
             </PrivateRoute>
           }
@@ -82,7 +86,7 @@ function App() {
         <Route
           path="admin/classes/classDetail/:classId"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <ClassDetailPage />
             </PrivateRoute>
           }
@@ -90,7 +94,7 @@ function App() {
         <Route
           path="admin/reports/:courseId/classes"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <ReportClassPage />
             </PrivateRoute>
           }
@@ -99,7 +103,7 @@ function App() {
         <Route
           path="admin/reports/:courseId/classes/:classId/attendance"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['admin']}>
               <ReportAttendanceDetail />
             </PrivateRoute>
           }
@@ -109,7 +113,7 @@ function App() {
         <Route
           path="/teacher/dashboard"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['teacher']}>
               <TeacherDashboard />
             </PrivateRoute>
           }
@@ -117,7 +121,7 @@ function App() {
         <Route
           path="/teacher/students"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['teacher']}>
               <StudentTeacherManagement />
             </PrivateRoute>
           }
@@ -126,7 +130,7 @@ function App() {
         <Route
           path="/teacher/courses"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['teacher']}>
               <CourseTeacherManagement />
             </PrivateRoute>
           }
@@ -135,8 +139,16 @@ function App() {
         <Route
           path="/teacher/classes"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['teacher']}>
               <ClassTeacherManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/classes/classDetail/:classId"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <TeacherClassDetail />
             </PrivateRoute>
           }
         />
@@ -144,8 +156,43 @@ function App() {
         <Route
           path="/teacher/schedule"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['teacher']}>
               <ScheduleTeacherManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/attendance"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <TeacherAttendancePage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/attendance/classDetail/:classId"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <TeacherAttendanceClassDetail />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/attendance/classDetail/:classId/traditional"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <TraditionalAttendance />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/attendance/classDetail/:classId/qrcode"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <QrCodeAttendance />
             </PrivateRoute>
           }
         />
@@ -154,7 +201,7 @@ function App() {
         <Route
           path="/student/dashboard"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['student']}>
               <StudentDashboardPage />
             </PrivateRoute>
           }

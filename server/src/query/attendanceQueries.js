@@ -5,7 +5,7 @@ const addAttendanceQuery = `
 `;
 
 const getAttendanceByClassQuery = `
-        SELECT a.attendance_id, a.student_class_id, u.user_id, u.username, u.email, s.student_code, a.date_attended, a.time_attended, a.status
+        SELECT a.attendance_id, a.student_class_id, u.user_id, u.username, u.email, s.student_code, s.student_code, a.date_attended, a.time_attended, a.status
         FROM attendance a
         JOIN student_class sc ON a.student_class_id = sc.student_class_id
         JOIN students s ON sc.student_id = s.student_id

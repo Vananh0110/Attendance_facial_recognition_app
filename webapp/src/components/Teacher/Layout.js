@@ -10,6 +10,7 @@ import {
   Building,
   NotepadText,
   CalendarCheck,
+  ClipboardList
 } from 'lucide-react';
 import '../../App.css';
 import { UserOutlined } from '@ant-design/icons';
@@ -188,6 +189,21 @@ const Layout = ({ children }) => {
                 id="classes-tooltip"
                 place="right"
                 content="Classes"
+              />
+            </li>
+            <li className="sidebar-item">
+              <NavLink
+                to="/teacher/attendance"
+                activeClassName="active"
+                className="sidebar-link"
+              >
+                <ClipboardList className="icon" data-tooltip-id="attendance-tooltip" />
+                <span>Attendance</span>
+              </NavLink>
+              <ReactTooltip
+                id="attendance-tooltip"
+                place="right"
+                content="Attendance"
               />
             </li>
           </ul>

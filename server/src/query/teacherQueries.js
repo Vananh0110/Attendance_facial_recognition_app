@@ -1,5 +1,5 @@
 const getAllTeachersQuery = `
-    SELECT t.teacher_id, u.username, u.email, u.phone, u.avatar_url
+    SELECT t.teacher_id, t.user_id, u.username, u.email, u.phone, u.avatar_url
     FROM users u
     INNER JOIN teachers t ON u.user_id = t.user_id
     ORDER BY t.teacher_id ASC`;
@@ -15,5 +15,5 @@ const getTeacherQuery = `
 module.exports = {
   getAllTeachersQuery,
   deleteTeacherQuery,
-  getTeacherQuery
+  getTeacherQuery,
 };
