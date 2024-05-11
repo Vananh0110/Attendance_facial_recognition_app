@@ -73,7 +73,7 @@ const ClassManagementPage = () => {
       'Thứ Sáu',
       'Thứ Bảy',
     ];
-    return days[day - 1];
+    return days[day];
   };
 
   const handleDelete = (classId) => {

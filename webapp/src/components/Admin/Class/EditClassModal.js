@@ -229,13 +229,13 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
           ]}
         >
           <Select placeholder="Select the day of the week">
-            <Option value={1}>Chủ Nhật</Option>
-            <Option value={2}>Thứ Hai</Option>
-            <Option value={3}>Thứ Ba</Option>
-            <Option value={4}>Thứ Tư</Option>
-            <Option value={5}>Thứ Năm</Option>
-            <Option value={6}>Thứ Sáu</Option>
-            <Option value={7}>Thứ Bảy</Option>
+            <Option value={0}>Chủ Nhật</Option>
+            <Option value={1}>Thứ Hai</Option>
+            <Option value={2}>Thứ Ba</Option>
+            <Option value={3}>Thứ Tư</Option>
+            <Option value={4}>Thứ Năm</Option>
+            <Option value={5}>Thứ Sáu</Option>
+            <Option value={6}>Thứ Bảy</Option>
           </Select>
         </Form.Item>
         <AddCourseModal
