@@ -3,7 +3,6 @@ const controller = require('../controller/attendanceController');
 
 const router = Router();
 
-router.get('/:classId', controller.getAttendanceByClass);
 router.post('/', controller.addAttendance);
 router.put('/:attendanceId', controller.updateAttendance);
 router.delete('/:attendanceId', controller.deleteAttendance);

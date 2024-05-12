@@ -47,11 +47,11 @@ const ScheduleTeacherManagement = () => {
 
     while (current.isSameOrBefore(endDate)) {
       events.push({
+        id: cls.class_id,
         title: `${cls.course_name} (${cls.class_code})`,
         start: current.clone().format('YYYY-MM-DD') + 'T' + cls.time_start,
         end: current.clone().format('YYYY-MM-DD') + 'T' + cls.time_finish,
         allDay: false,
-        id: cls.class_id
       });
       current.add(1, 'weeks');
     }

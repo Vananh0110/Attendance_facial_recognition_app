@@ -115,11 +115,52 @@ const deleteClass = async (req, res) => {
   }
 };
 
+const calculateMeetingDays = (startDate, endDate, dayOfWeek) => {
+  let dates = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const day = dayOfWeek % 7;
+  start.setDate(start.getDate() + ((day - start.getDay() + 7) % 7));
+
+  while (start <= end) {
+    dates.push(new Date(start));
+    start.setDate(start.getDate() + 7);
+  }
+
+  return dates.map((date) => ({
+    date: date.toISOString().split('T')[0],
+  }));
+};
+
+const getSchedule = async (req, res) => {
+  const classId = req.params.classId;
+  try {
+    const query =
+      'SELECT date_start, date_finish, day_of_week FROM classes WHERE class_id = $1';
+    const { rows } = await pool.query(query, [classId]);
+    if (rows.length > 0) {
+      const { date_start, date_finish, day_of_week } = rows[0];
+      const schedule = calculateMeetingDays(
+        date_start,
+        date_finish,
+        day_of_week
+      );
+      res.json(schedule);
+    } else {
+      res.status(404).json({ message: 'Class not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching class schedule', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 module.exports = {
   getAllClasses,
   getClass,
   addClass,
   updateClass,
   deleteClass,
-  getListClasses
+  getListClasses,
+  getSchedule,
 };

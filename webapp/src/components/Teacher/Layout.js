@@ -5,7 +5,7 @@ import {
   ChevronDown,
   AlignJustify,
   LayoutDashboard,
-  Folder,
+  UserCheck,
   Users,
   Building,
   NotepadText,
@@ -197,13 +197,28 @@ const Layout = ({ children }) => {
                 activeClassName="active"
                 className="sidebar-link"
               >
-                <ClipboardList className="icon" data-tooltip-id="attendance-tooltip" />
+                <UserCheck className="icon" data-tooltip-id="attendance-tooltip" />
                 <span>Attendance</span>
               </NavLink>
               <ReactTooltip
                 id="attendance-tooltip"
                 place="right"
                 content="Attendance"
+              />
+            </li>
+            <li className="sidebar-item">
+              <NavLink
+                to="/teacher/report"
+                activeClassName="active"
+                className="sidebar-link"
+              >
+                <ClipboardList className="icon" data-tooltip-id="report-tooltip" />
+                <span>Reports</span>
+              </NavLink>
+              <ReactTooltip
+                id="report-tooltip"
+                place="right"
+                content="Reports"
               />
             </li>
           </ul>
