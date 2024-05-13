@@ -4,12 +4,12 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import Layout from '../../../components/Teacher/Layout';
+import Layout from '../../../components/Student/Layout';
+import '../../../App.css';
 import axios from '../../../api/axios';
 import moment from 'moment';
-import '../../../App.css';
 
-const ScheduleTeacherManagement = () => {
+const StudentSchedulePage = () => {
   const [events, setEvents] = useState([]);
 
   const navigate = useNavigate();
@@ -21,13 +21,12 @@ const ScheduleTeacherManagement = () => {
   const fetchClasses = async () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userId = user.user_id;
+    console.log(userId);
     try {
-      const response = await axios.get('/class/all');
-      const filteredData = response.data.filter(
-        (cls) => cls.user_id === userId
-      );
+      const response = await axios.get(`/studentClass/getClass/${userId}`);
+      const data = response.data;
       let allEvents = [];
-      filteredData.forEach((cls) => {
+      data.forEach((cls) => {
         allEvents = allEvents.concat(generateRecurringEvents(cls));
       });
       setEvents(allEvents);
@@ -63,8 +62,9 @@ const ScheduleTeacherManagement = () => {
 
   const handleEventClick = (clickInfo) => {
     const classId = clickInfo.event.id.split('-')[0];
-    navigate(`/teacher/attendance/classDetail/${classId}`);
+    navigate(`/student/classes/classDetail/${classId}`);
   };
+
   return (
     <Layout>
       <div className="container-fluid container-fluid-custom">
@@ -88,4 +88,4 @@ const ScheduleTeacherManagement = () => {
   );
 };
 
-export default ScheduleTeacherManagement;
+export default StudentSchedulePage;

@@ -138,11 +138,15 @@ const TraditionalAttendance = () => {
     {
       title: 'STT',
       key: 'index',
+      fixed: 'left',
+      width: 60,
       render: (text, record, index) => index + 1,
     },
     {
       title: 'Image',
       key: 'avatar',
+      fixed: 'left',
+      width: 60,
       render: (text, record) => (
         <Avatar
           src={record.avatar_url ? record.avatar_url : undefined}
@@ -160,6 +164,8 @@ const TraditionalAttendance = () => {
       title: 'Name',
       dataIndex: 'username',
       key: 'username',
+      fixed: 'left',
+      width: 180,
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -201,6 +207,8 @@ const TraditionalAttendance = () => {
       title: 'Student Code',
       dataIndex: 'student_code',
       key: 'student_code',
+      fixed: 'left',
+      width: 120,
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -255,6 +263,7 @@ const TraditionalAttendance = () => {
         </>
       ),
       key: day.date,
+      width: 180,
       filters: [
         { text: 'P', value: 'P' },
         { text: 'L', value: 'L' },
@@ -331,7 +340,7 @@ const TraditionalAttendance = () => {
           dataSource={students}
           columns={columns}
           rowKey="id"
-          scroll={{ y: 400 }}
+          scroll={{ x: 'max-content', y: 400 }}
           pagination={false}
         />
       </div>

@@ -5,7 +5,6 @@ import LoginPage from './pages/LoginPage';
 import PrivateRoute from './components/PrivateRoute';
 import RegisterPage from './pages/RegisterPage';
 import TeacherDashboard from './pages/TeacherPage/Dashboard/TeacherDashboard';
-import StudentDashboardPage from './pages/StudentPage/DashboardPage';
 import AdminDashboardPage from './pages/AdminPage/Dashboard/DashboardPage';
 import TeacherManagementPage from './pages/AdminPage/Teacher/TeacherManagementPage';
 import StudentManagementPage from './pages/AdminPage/Student/StudentManagementPage';
@@ -26,6 +25,13 @@ import TraditionalAttendance from './pages/TeacherPage/Attendance/TraditionalAtt
 import QrCodeAttendance from './pages/TeacherPage/Attendance/QrCodeAttendance';
 import TeacherReportPage from './pages/TeacherPage/Report/TeacherReportPage';
 import TeacherReportClassDetail from './pages/TeacherPage/Report/TeacherReportClassDetail';
+import StudentDashboardPage from './pages/StudentPage/Dashboard/StudentDashboardPage';
+import StudentSchedulePage from './pages/StudentPage/Schedule/StudentSchedulePage';
+import StudentClassPage from './pages/StudentPage/Class/StudentClassPage';
+import StudentReportPage from './pages/StudentPage/Report/StudentReportPage';
+import StudentClassDetail from './pages/StudentPage/Class/StudentClassDetail';
+import StudentReportClassDetail from './pages/StudentPage/Report/StudentReportClassDetail';
+
 function App() {
   return (
     <BrowserRouter>
@@ -221,6 +227,49 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['student']}>
               <StudentDashboardPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/schedule"
+          element={
+            <PrivateRoute allowedRoles={['student']}>
+              <StudentSchedulePage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/student/classes"
+          element={
+            <PrivateRoute allowedRoles={['student']}>
+              <StudentClassPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/student/classes/classDetail/:classId"
+          element={
+            <PrivateRoute allowedRoles={['student']}>
+              <StudentClassDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/report"
+          element={
+            <PrivateRoute allowedRoles={['student']}>
+              <StudentReportPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/student/report/classDetail/:classId"
+          element={
+            <PrivateRoute allowedRoles={['student']}>
+              <StudentReportClassDetail />
             </PrivateRoute>
           }
         />

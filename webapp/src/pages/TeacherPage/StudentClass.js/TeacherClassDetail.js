@@ -18,8 +18,6 @@ import { UserOutlined, DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import AddStudentToClassModal from '../../../components/Admin/StudentClass/AddStudentToClassModal';
 
-const { Option } = Select;
-
 const TeacherClassDetail = () => {
     const { classId } = useParams();
     const [classInfo, setClassInfo] = useState(null);

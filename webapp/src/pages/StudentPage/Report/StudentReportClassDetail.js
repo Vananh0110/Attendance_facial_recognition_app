@@ -7,11 +7,9 @@ import {
   FileExcelOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import * as XLSX from 'xlsx';
-import Layout from '../../../components/Teacher/Layout';
+import Layout from '../../../components/Student/Layout';
 import '../../../App.css';
-
-const TeacherReportClassDetail = () => {
+const StudentReportClassDetail = () => {
   const { classId } = useParams();
   const [students, setStudents] = useState([]);
   const [schedule, setSchedule] = useState([]);
@@ -51,29 +49,6 @@ const TeacherReportClassDetail = () => {
         content: 'There was an error fetching the class information.',
       });
     }
-  };
-
-  const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(
-      students.map((student, index) => ({
-        STT: index + 1,
-        Name: student.username,
-        'Student Code': student.student_code,
-        ...schedule.reduce((acc, day) => {
-          const key = `${student.student_class_id}_${day.date}`;
-          acc[day.date] = attendance[key] || '--/--';
-          return acc;
-        }, {}),
-      }))
-    );
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
-    XLSX.writeFile(wb, 'AttendanceData.xlsx');
-  };
-
-  const goToAttendance = () => {
-    navigate(`/teacher/attendance/classDetail/${classId}/traditional`);
   };
 
   const attendanceColors = {
@@ -221,30 +196,17 @@ const TeacherReportClassDetail = () => {
     <Layout>
       <div className="container-fluid container-fluid-custom">
         <h4>View Attendance</h4>
-        <div className="d-flex justify-content-end mt-3 mb-4">
-          <Button
-            icon={<FileExcelOutlined />}
-            onClick={exportToExcel}
-            type="primary"
-            className="me-2"
-          >
-            Export to Excel
-          </Button>
-
-          <Button onClick={goToAttendance} type="default">
-            Go to Attendance
-          </Button>
-        </div>
         <Table
           dataSource={students}
           columns={columns}
           rowKey="id"
           pagination={false}
           scroll={{ x: 'max-content', y: 400 }}
+          className="mt-5"
         />
       </div>
     </Layout>
   );
 };
 
-export default TeacherReportClassDetail;
+export default StudentReportClassDetail;
