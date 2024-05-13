@@ -46,21 +46,23 @@ const ScheduleTeacherManagement = () => {
     }
 
     while (current.isSameOrBefore(endDate)) {
+      const eventDateStr = current.clone().format('YYYY-MM-DD');
       events.push({
-        id: cls.class_id,
+        id: `${cls.class_id}-${eventDateStr}`,
         title: `${cls.course_name} (${cls.class_code})`,
         start: current.clone().format('YYYY-MM-DD') + 'T' + cls.time_start,
         end: current.clone().format('YYYY-MM-DD') + 'T' + cls.time_finish,
         allDay: false,
       });
       current.add(1, 'weeks');
-    }
+    } 
 
     return events;
   };
 
   const handleEventClick = (clickInfo) => {
-    navigate(`/teacher/attendance/classDetail/${clickInfo.event.id}`);
+    const classId = clickInfo.event.id.split('-')[0];
+    navigate(`/teacher/attendance/classDetail/${classId}`);
   };
   return (
     <Layout>
