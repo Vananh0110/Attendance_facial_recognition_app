@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../../api/axios';
-import { Table, Button, Tag, Select, Modal } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Table, Button, Tag, Select, Modal, Avatar, Input } from 'antd';
+import { UserOutlined, SearchOutlined } from '@ant-design/icons';
 import Layout from '../../../components/Teacher/Layout';
 import '../../../App.css';
 
@@ -15,6 +15,8 @@ const TraditionalAttendance = () => {
   const [schedule, setSchedule] = useState([]);
   const [activeColumn, setActiveColumn] = useState(null);
   const [columnChanges, setColumnChanges] = useState({});
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchClassInfo();
@@ -33,74 +35,208 @@ const TraditionalAttendance = () => {
     const attendanceMap = {};
     attendanceData.data.forEach((att) => {
       const date = new Date(att.date_attended);
-      console.log(date);
       const formattedDate = new Date(
-        new Date(date).getTime() - new Date().getTimezoneOffset() * 60000
+        date.getTime() - date.getTimezoneOffset() * 60000
       )
         .toISOString()
         .split('T')[0];
-      console.log(formattedDate);
       const key = `${att.student_class_id}_${formattedDate}`;
       attendanceMap[key] = att.status;
     });
     setAttendance(attendanceMap);
-    console.log(attendanceMap);
   };
 
-  const handleAttendanceChange = (studentClassId, date, status) => {
-    setColumnChanges({
-      ...columnChanges,
-      [`${studentClassId}_${date}`]: status,
+  const goToReport = () => {
+    navigate(`/teacher/report/classDetail/${classId}`);
+  };
+  const handleAttendanceChange = (studentClassId, date, value) => {
+    const key = `${studentClassId}_${date}`;
+    const status = attendance[key] || '';
+    if (status !== value) {
+      setColumnChanges((prevChanges) => ({
+        ...prevChanges,
+        [key]: value,
+      }));
+    }
+  };
+
+  const activateColumn = (date) => {
+    const isColumnPopulated = students.some(
+      (student) =>
+        columnChanges[`${student.student_class_id}_${date}`] !== undefined
+    );
+    if (!isColumnPopulated) {
+      const newColumnChanges = {};
+      students.forEach((student) => {
+        const key = `${student.student_class_id}_${date}`;
+        if (newColumnChanges[key] === undefined) {
+          newColumnChanges[key] = undefined;
+        }
+      });
+      setColumnChanges(newColumnChanges);
+    }
+    setActiveColumn(date);
+  };
+
+  const setAllToPresent = (date) => {
+    const updates = { ...columnChanges };
+    students.forEach((student) => {
+      const key = `${student.student_class_id}_${date}`;
+      updates[key] = 'P';
     });
+    setColumnChanges(updates);
   };
 
   const saveColumnAttendance = async () => {
+    console.log('Saving changes:', columnChanges);
     const entries = Object.entries(columnChanges);
+    if (entries.length === 0) {
+      console.log('No changes to save');
+      return;
+    }
     for (let i = 0; i < entries.length; i++) {
       const [key, status] = entries[i];
+      if (!status) continue;
       const [studentClassId, date] = key.split('_');
-      const timeAttended = new Date().toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-      console.log(studentClassId, date, timeAttended, status);
+      const method = attendance[key] ? 'put' : 'post';
+      const url =
+        method === 'put' ? `/attendance/${studentClassId}` : '/attendance';
+
       try {
-        await axios.post('/attendance', {
+        await axios[method](url, {
           student_class_id: studentClassId,
           date_attended: date,
-          time_attended: timeAttended,
+          time_attended: new Date().toLocaleTimeString('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
           status,
         });
-
         setAttendance((prev) => ({ ...prev, [key]: status }));
       } catch (error) {
+        console.error('Error saving attendance:', error);
         Modal.error({
           title: 'Error',
-          content: `There was an error recording the attendance for ${date}.`,
+          content: `There was an error processing the attendance for ${date}.`,
         });
         break;
       }
     }
+
     setActiveColumn(null);
     setColumnChanges({});
   };
 
+  const attendanceColors = {
+    P: 'green',
+    L: 'orange',
+    A: 'cyan',
+    UA: 'red',
+  };
+
   const columns = [
     {
-      title: 'No',
-      dataIndex: 'index',
+      title: 'STT',
       key: 'index',
       render: (text, record, index) => index + 1,
+    },
+    {
+      title: 'Image',
+      key: 'avatar',
+      render: (text, record) => (
+        <Avatar
+          src={record.avatar_url ? record.avatar_url : undefined}
+          alt="avatar"
+          size={50}
+          style={{ verticalAlign: 'middle' }}
+          icon={<UserOutlined />}
+          onError={() => {
+            return false;
+          }}
+        />
+      ),
     },
     {
       title: 'Name',
       dataIndex: 'username',
       key: 'username',
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search name"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+            style={{ width: 188, marginBottom: 8, display: 'block' }}
+          />
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90, marginRight: 8 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters()}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </div>
+      ),
+      onFilter: (value, record) =>
+        record.username.toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: 'Student Code',
       dataIndex: 'student_code',
       key: 'student_code',
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search student code"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+            style={{ width: 188, marginBottom: 8, display: 'block' }}
+          />
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90, marginRight: 8 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters()}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </div>
+      ),
+      onFilter: (value, record) =>
+        record.student_code.toLowerCase().includes(value.toLowerCase()),
     },
     ...schedule.map((day) => ({
       title: (
@@ -108,36 +244,54 @@ const TraditionalAttendance = () => {
           {day.date}
           <Button
             icon={<UserOutlined />}
-            onClick={() =>
-              setActiveColumn(day.date === activeColumn ? null : day.date)
-            }
-            style={{ marginLeft: 8, padding: 0 }}
+            onClick={() => activateColumn(day.date)}
+            style={{
+              marginLeft: 8,
+              padding: 0,
+              border: 'none',
+              backgroundColor: 'transparent',
+            }}
           />
         </>
       ),
       key: day.date,
+      filters: [
+        { text: 'P', value: 'P' },
+        { text: 'L', value: 'L' },
+        { text: 'A', value: 'A' },
+        { text: 'UA', value: 'UA' },
+      ],
+      onFilter: (value, record) => {
+        const key = `${record.student_class_id}_${day.date}`;
+        return attendance[key] === value;
+      },
       render: (text, record) => {
         const key = `${record.student_class_id}_${day.date}`;
-        if (activeColumn === day.date) {
-          return (
-            <Select
-              defaultValue={columnChanges[key] || attendance[key] || 'P'}
-              style={{ width: 120 }}
-              onChange={(value) =>
-                handleAttendanceChange(record.student_class_id, day.date, value)
+        const currentValue =
+          columnChanges[key] !== undefined
+            ? columnChanges[key]
+            : attendance[key];
+        return activeColumn === day.date ? (
+          <Select
+            style={{ width: 120 }}
+            onChange={(value) => {
+              if (value !== currentValue) {
+                handleAttendanceChange(
+                  record.student_class_id,
+                  day.date,
+                  value
+                );
               }
-            >
-              <Option value="P">P</Option>
-              <Option value="L">L</Option>
-              <Option value="A">A</Option>
-              <Option value="UA">UA</Option>
-            </Select>
-          );
-        }
-        return attendance[key] ? (
-          <Tag color={attendance[key] === 'P' ? 'green' : 'volcano'}>
-            {attendance[key]}
-          </Tag>
+            }}
+            value={currentValue}
+          >
+            <Option value="P">P</Option>
+            <Option value="L">L</Option>
+            <Option value="A">A</Option>
+            <Option value="UA">UA</Option>
+          </Select>
+        ) : attendance[key] ? (
+          <Tag color={attendanceColors[attendance[key]]}>{attendance[key]}</Tag>
         ) : (
           '--/--'
         );
@@ -148,17 +302,38 @@ const TraditionalAttendance = () => {
   return (
     <Layout>
       <div className="container-fluid container-fluid-custom">
-        <h4>Traditional Attendance</h4>
-        <Table dataSource={students} columns={columns} rowKey="id" />
-        {activeColumn && (
-          <Button
-            type="primary"
-            onClick={saveColumnAttendance}
-            style={{ marginTop: 16 }}
-          >
-            Save Changes
+        <h4>Attendance</h4>
+        <div className="mt-4 mb-3 d-flex justify-content-between">
+          {activeColumn && (
+            <div className="d-flex justify-content-end">
+              <Button
+                type="default"
+                onClick={() => setAllToPresent(activeColumn)}
+                className="me-2"
+                style={{ borderRadius: '50%' }}
+              >
+                P
+              </Button>
+              <Button
+                type="primary"
+                onClick={saveColumnAttendance}
+                className="ms-2"
+              >
+                Save
+              </Button>
+            </div>
+          )}
+          <Button type="default" onClick={goToReport}>
+            Go to Report
           </Button>
-        )}
+        </div>
+        <Table
+          dataSource={students}
+          columns={columns}
+          rowKey="id"
+          scroll={{ y: 400 }}
+          pagination={false}
+        />
       </div>
     </Layout>
   );

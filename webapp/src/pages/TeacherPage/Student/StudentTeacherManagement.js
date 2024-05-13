@@ -148,7 +148,7 @@ const StudentTeacherManagement = () => {
       key: 'student_id',
     },
     {
-      title: 'Avatar',
+      title: 'Image',
       key: 'avatar',
       render: (text, record) => (
         <Avatar

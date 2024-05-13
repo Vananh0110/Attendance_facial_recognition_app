@@ -24,6 +24,8 @@ import TeacherAttendancePage from './pages/TeacherPage/Attendance/TeacherAttenda
 import TeacherAttendanceClassDetail from './pages/TeacherPage/Attendance/TeacherAttendanceClassDetail';
 import TraditionalAttendance from './pages/TeacherPage/Attendance/TraditionalAttendance';
 import QrCodeAttendance from './pages/TeacherPage/Attendance/QrCodeAttendance';
+import TeacherReportPage from './pages/TeacherPage/Report/TeacherReportPage';
+import TeacherReportClassDetail from './pages/TeacherPage/Report/TeacherReportClassDetail';
 function App() {
   return (
     <BrowserRouter>
@@ -193,6 +195,22 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['teacher']}>
               <QrCodeAttendance />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/report"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <TeacherReportPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/report/classDetail/:classId"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <TeacherReportClassDetail />
             </PrivateRoute>
           }
         />

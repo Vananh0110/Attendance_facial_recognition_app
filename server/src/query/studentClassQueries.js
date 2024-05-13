@@ -20,7 +20,7 @@ const getStudentsInClassQuery = `
     JOIN students st ON s.student_id = st.student_id
     JOIN users u ON st.user_id = u.user_id
     WHERE s.class_id = $1
-    ORDER BY u.username ASC
+    ORDER BY student_class_id ASC
 `;
 
 const getAllStudentClassQuery = 'SELECT * FROM student_class';
