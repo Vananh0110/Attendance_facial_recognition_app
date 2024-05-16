@@ -36,9 +36,9 @@ const LoginScreen = (props) => {
       const role_id = response.data.user.role_id;
 
       if (role_id == 2) {
-        props.navigation.navigate('Teacher Dashboard');
+        props.navigation.navigate('TeacherHomeScreen');
       } else if (role_id == 3) {
-        props.navigation.navigate('Student Dashboard');
+        props.navigation.navigate('StudentHomeScreen');
       } else {
         console.error('Role không hợp lệ:', role_id);
       }

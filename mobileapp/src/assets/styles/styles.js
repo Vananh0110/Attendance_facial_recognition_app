@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   textLink: {
     color: '#00B0FF',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   input: {
     height: 40,
@@ -55,8 +55,34 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
+  scrollContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    padding: 5,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  text: {
+    fontSize: 14,
+  },
+  noScheduleText: {
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  calendar: {
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    margin: 10,
+  },
+  card: {
+    marginVertical: 5,
+    backgroundColor: '#D3E3FF',
+  },
 });
 
 export default styles;

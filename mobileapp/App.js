@@ -4,16 +4,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './src/screens/WelcomeScreen.jsx';
 import RegisterScreen from './src/screens/RegisterScreen.jsx';
 import LoginScreen from './src/screens/LoginScreen.jsx';
-import TeacherDashboard from './src/screens/teacher/TeacherDashboard.jsx';
-import StudentDashboard from './src/screens/student/StudentDashboard.jsx';
-
+import StudentHomeScreen from './src/screens/student/StudentHomeScreen.jsx';
+import TeacherHomeScreen from './src/screens/teacher/TeacherHomeScreen.jsx';
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName="TeacherHomeScreen"
         screenOptions={{
           statusBarColor: '#00B0FF',
           headerStyle: {
@@ -40,10 +39,17 @@ function App() {
         />
 
         {/* Teacher */}
-        <Stack.Screen name="Teacher Dashboard" component={TeacherDashboard} />
-
+        <Stack.Screen
+          name="TeacherHomeScreen"
+          component={TeacherHomeScreen}
+          options={{ headerShown: false }}
+        />
         {/* Student */}
-        <Stack.Screen name="Student Dashboard" component={StudentDashboard} />
+        <Stack.Screen
+          name="StudentHomeScreen"
+          component={StudentHomeScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
