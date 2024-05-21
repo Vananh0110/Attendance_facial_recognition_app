@@ -90,6 +90,12 @@ const TeacherDetailClassScreen = ({ route }) => {
     return days[day];
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    return moment(timeString, "HH:mm:ss").format("HH:mm");
+  };
+
+
   return (
     <>
       <Appbar.Header style={{ backgroundColor: '#00B0FF' }}>
@@ -133,7 +139,7 @@ const TeacherDetailClassScreen = ({ route }) => {
                 </Text>
                 <Text style={styles.detailText}>
                   <Text style={styles.detailLabel}>Time: </Text>
-                  {classInfo.time_start} - {classInfo.time_finish}
+                  {formatTime(classInfo.time_start)} - {formatTime(classInfo.time_finish)}
                 </Text>
                 <Text style={styles.detailText}>
                   <Text style={styles.detailLabel}>Date start: </Text>

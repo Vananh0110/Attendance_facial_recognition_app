@@ -11,6 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const TeacherHomeScreen = () => {
   const [index, setIndex] = useState(0);
+  const [userId, setUserId] = useState(null);
   const [routes] = useState([
     { key: 'calendar', title: 'Home', icon: 'calendar' },
     { key: 'class', title: 'Class', icon: 'book' },
@@ -35,6 +36,7 @@ const TeacherHomeScreen = () => {
     const userJson = await AsyncStorage.getItem('user');
     const user = JSON.parse(userJson);
     const userId = user.user_id;
+    setUserId(userId);
     setUsername(user.username);
     setAvatarUrl(user.avatar_url);
 
@@ -115,7 +117,7 @@ const TeacherHomeScreen = () => {
           />
         );
       case 'class':
-        return <TeacherClass />;
+        return <TeacherClass userId={userId} />;
       case 'attendance':
         return <TeacherAttendance />;
       case 'report':
@@ -163,8 +165,8 @@ const TeacherHomeScreen = () => {
         renderIcon={({ route, focused, color }) => (
           <MaterialCommunityIcons name={route.icon} color={color} size={24} />
         )}
-        activeColor='#204876'
-        inactiveColor='#4b4b4b'
+        activeColor="#204876"
+        inactiveColor="#4b4b4b"
         barStyle={{
           backgroundColor: '#ffffff',
           borderWidth: 0.5,
