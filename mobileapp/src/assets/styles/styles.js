@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   card: {
     marginVertical: 5,
     backgroundColor: '#D3E3FF',
-  },
+  }
 });
 
 export default styles;
