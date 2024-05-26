@@ -71,6 +71,13 @@ const TeacherClass = ({ userId }) => {
     navigation.navigate('TeacherAddNewClass', { userId: userId });
   };
 
+  const handleCardPress = (classId) => {
+    navigation.navigate('TeacherModifiedClassScreen', {
+      classId: classId,
+      userId: userId,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Searchbar
@@ -85,9 +92,12 @@ const TeacherClass = ({ userId }) => {
       ) : (
         <FlatList
           data={filteredClasses}
-          keyExtractor={(item) => item.class_id.toString()}
+          keyExtractor={(item) => item.class_id}
           renderItem={({ item }) => (
-            <Card style={styles.card}>
+            <Card
+              style={styles.card}
+              onPress={() => handleCardPress(item.class_id)}
+            >
               <Card.Title
                 title={item.course_code + ' ' + item.course_name}
                 titleStyle={styles.title}

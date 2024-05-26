@@ -14,7 +14,6 @@ import {
   Provider,
   Button,
   IconButton,
-  Icon,
 } from 'react-native-paper';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';

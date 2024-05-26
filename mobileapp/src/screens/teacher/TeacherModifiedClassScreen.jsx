@@ -16,12 +16,13 @@ import {
   Provider,
   Avatar,
   Button,
+  Checkbox,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import axios from '../../api/axios';
 import moment from 'moment';
 
-const TeacherDetailClassScreen = ({ route }) => {
+const TeacherModifiedClassScreen = ({ route }) => {
   const { classId } = route.params;
   const navigation = useNavigation();
   const [classInfo, setClassInfo] = useState(null);
@@ -30,24 +31,37 @@ const TeacherDetailClassScreen = ({ route }) => {
   const [error, setError] = useState('');
   const [visible, setVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedStudents, setSelectedStudents] = useState(new Set());
 
   useEffect(() => {
-    fetchClassAndStudents();
+    fetchClassInfo();
+    fetchStudentsInClass();
   }, [classId]);
 
-  const fetchClassAndStudents = async () => {
+  const fetchClassInfo = async () => {
     try {
       setLoading(true);
-      const classResponse = await axios.get(`/class/${classId}`);
-      const studentsResponse = await axios.get(
+      const response = await axios.get(`/class/${classId}`);
+      setClassInfo(response.data);
+    } catch (error) {
+      console.error('Failed to fetch class info:', error);
+      setError('Failed to load class data, please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStudentsInClass = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
         `/studentClass/getStudentInClass/${classId}`
       );
-      setClassInfo(classResponse.data);
-      setStudents(studentsResponse.data);
-      setLoading(false);
+      setStudents(response.data);
     } catch (error) {
-      console.error('Failed to fetch data: ', error);
-      setError('Failed to load data, please try again.');
+      console.error('Failed to fetch students:', error);
+      setError('Failed to load students, please try again.');
+    } finally {
       setLoading(false);
     }
   };
@@ -92,9 +106,33 @@ const TeacherDetailClassScreen = ({ route }) => {
 
   const formatTime = (timeString) => {
     if (!timeString) return '';
-    return moment(timeString, "HH:mm:ss").format("HH:mm");
+    return moment(timeString, 'HH:mm:ss').format('HH:mm');
   };
 
+  const toggleStudentSelection = (studentClassId, event) => {
+    event.stopPropagation();
+    const newSelectedStudents = new Set(selectedStudents);
+    if (newSelectedStudents.has(studentClassId)) {
+      newSelectedStudents.delete(studentClassId);
+    } else {
+      newSelectedStudents.add(studentClassId);
+    }
+    console.log(newSelectedStudents);
+    setSelectedStudents(newSelectedStudents);
+  };
+
+  const handleRemoveStudents = async () => {
+    for (let studentClassId of selectedStudents) {
+      try {
+        await axios.delete(`/studentClass/${studentClassId}`);
+        console.log(`Deleted student_class_id ${studentClassId}`);
+      } catch (error) {
+        console.error('Error deleting student', error);
+      }
+      await fetchStudentsInClass();
+    }
+    setSelectedStudents(new Set());
+  };
 
   return (
     <>
@@ -139,7 +177,8 @@ const TeacherDetailClassScreen = ({ route }) => {
                 </Text>
                 <Text style={styles.detailText}>
                   <Text style={styles.detailLabel}>Time: </Text>
-                  {formatTime(classInfo.time_start)} - {formatTime(classInfo.time_finish)}
+                  {formatTime(classInfo.time_start)} -{' '}
+                  {formatTime(classInfo.time_finish)}
                 </Text>
                 <Text style={styles.detailText}>
                   <Text style={styles.detailLabel}>Date start: </Text>
@@ -156,9 +195,20 @@ const TeacherDetailClassScreen = ({ route }) => {
             <Text style={styles.header}>
               List of Students ({students.length})
             </Text>
+            <Button
+              icon="delete"
+              mode="contained"
+              onPress={handleRemoveStudents}
+              disabled={selectedStudents.size === 0}
+              style={{
+                backgroundColor: selectedStudents.size > 0 ? '#ff0000' : '#d4d1d1'
+              }}
+            >
+              Remove Selected
+            </Button>
             <DataTable>
               <DataTable.Header>
-                <DataTable.Title style={{ flex: 1 }}>No.</DataTable.Title>
+                <DataTable.Title style={{ flex: 1 }}>Select</DataTable.Title>
                 <DataTable.Title style={{ flex: 4 }}>Name</DataTable.Title>
                 <DataTable.Title style={{ flex: 2 }}>ID</DataTable.Title>
               </DataTable.Header>
@@ -168,8 +218,20 @@ const TeacherDetailClassScreen = ({ route }) => {
                   onPress={() => showModal(student)}
                 >
                   <DataTable.Row>
-                    <DataTable.Cell style={{ flex: 1 }}>
-                      {index + 1}
+                    <DataTable.Cell>
+                      <Checkbox
+                        status={
+                          selectedStudents.has(student.student_class_id)
+                            ? 'checked'
+                            : 'unchecked'
+                        }
+                        onPress={(event) =>
+                          toggleStudentSelection(
+                            student.student_class_id,
+                            event
+                          )
+                        }
+                      />
                     </DataTable.Cell>
                     <DataTable.Cell style={{ flex: 4 }}>
                       {student.username}
@@ -279,7 +341,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 30,
   },
-
   button: {
     marginTop: 10,
     backgroundColor: '#ddd',
@@ -299,4 +360,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TeacherDetailClassScreen;
+export default TeacherModifiedClassScreen;

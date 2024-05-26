@@ -119,7 +119,7 @@ const TeacherHomeScreen = () => {
       case 'class':
         return <TeacherClass userId={userId} />;
       case 'attendance':
-        return <TeacherAttendance />;
+        return <TeacherAttendance userId={userId} />;
       case 'report':
         return <TeacherReport />;
       default:
