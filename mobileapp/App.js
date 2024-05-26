@@ -6,6 +6,9 @@ import RegisterScreen from './src/screens/RegisterScreen.jsx';
 import LoginScreen from './src/screens/LoginScreen.jsx';
 import StudentHomeScreen from './src/screens/student/StudentHomeScreen.jsx';
 import TeacherHomeScreen from './src/screens/teacher/TeacherHomeScreen.jsx';
+import TeacherDetailClassScreen from './src/screens/teacher/TeacherDetailClassScreen.jsx';
+import TeacherAddNewClass from './src/screens/teacher/TeacherAddNewClass.jsx';
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -44,6 +47,19 @@ function App() {
           component={TeacherHomeScreen}
           options={{ headerShown: false }}
         />
+
+        <Stack.Screen
+          name="TeacherDetailClass"
+          component={TeacherDetailClassScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="TeacherAddNewClass"
+          component={TeacherAddNewClass}
+          options={{ headerShown: false }}
+        />
+
         {/* Student */}
         <Stack.Screen
           name="StudentHomeScreen"

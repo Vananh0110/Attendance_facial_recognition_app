@@ -48,13 +48,13 @@ CREATE TABLE admins (
 
 CREATE TABLE courses (
     course_id INT GENERATED ALWAYS AS IDENTITY,
-    course_code VARCHAR(255) NOT NULL,
+    course_code VARCHAR(255) UNIQUE NOT NULL,
     course_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE classes (
     class_id INT GENERATED ALWAYS AS IDENTITY,
-    class_code VARCHAR(255) NOT NULL,
+    class_code VARCHAR(255) UNIQUE NOT NULL,
     course_id INT NOT NULL,
     date_start DATE NOT NULL,
     date_finish DATE NOT NULL,

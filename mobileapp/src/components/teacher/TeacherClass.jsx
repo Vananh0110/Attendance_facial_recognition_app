@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { Card, Searchbar, Text, ActivityIndicator } from 'react-native-paper';
+import {
+  Card,
+  Searchbar,
+  Text,
+  ActivityIndicator,
+  Button,
+} from 'react-native-paper';
 import axios from '../../api/axios';
 import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
 
 const TeacherClass = ({ userId }) => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetchClasses();
@@ -58,6 +67,10 @@ const TeacherClass = ({ userId }) => {
     return moment(timeString, 'HH:mm:ss').format('HH:mm');
   };
 
+  const handleAddClass = () => {
+    navigation.navigate('TeacherAddNewClass', { userId: userId });
+  };
+
   return (
     <View style={styles.container}>
       <Searchbar
@@ -68,7 +81,7 @@ const TeacherClass = ({ userId }) => {
         inputStyle={styles.inputTextStyle}
       />
       {loading ? (
-        <ActivityIndicator animating={true} size="large" />
+        <ActivityIndicator animating={true} color="#00B0FF" />
       ) : (
         <FlatList
           data={filteredClasses}
@@ -89,6 +102,14 @@ const TeacherClass = ({ userId }) => {
           )}
         />
       )}
+      <Button
+        icon="plus"
+        mode="contained"
+        onPress={handleAddClass}
+        style={styles.addButton}
+      >
+        Add New Class
+      </Button>
     </View>
   );
 };
@@ -119,6 +140,17 @@ const styles = StyleSheet.create({
   },
   inputTextStyle: {
     fontSize: 14,
+  },
+  addButton: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    margin: 10,
+    backgroundColor: '#00b0ff',
+    width: '50%',
+    alignSelf: 'center',
+    marginHorizontal: '25%',
   },
 });
 
