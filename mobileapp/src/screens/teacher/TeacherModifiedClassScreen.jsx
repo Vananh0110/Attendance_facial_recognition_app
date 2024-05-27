@@ -17,6 +17,8 @@ import {
   Avatar,
   Button,
   Checkbox,
+  List,
+  Searchbar,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import axios from '../../api/axios';
@@ -32,10 +34,15 @@ const TeacherModifiedClassScreen = ({ route }) => {
   const [visible, setVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedStudents, setSelectedStudents] = useState(new Set());
+  const [allStudents, setAllStudents] = useState([]);
+  const [selectedStudentsToAdd, setSelectedStudentsToAdd] = useState(new Set());
+  const [addStudentModalVisible, setAddStudentModalVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchClassInfo();
     fetchStudentsInClass();
+    fetchAllStudents();
   }, [classId]);
 
   const fetchClassInfo = async () => {
@@ -63,6 +70,15 @@ const TeacherModifiedClassScreen = ({ route }) => {
       setError('Failed to load students, please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAllStudents = async () => {
+    try {
+      const response = await axios.get('/student/all');
+      setAllStudents(response.data);
+    } catch (error) {
+      console.error('Failed to fetch students:', error);
     }
   };
 
@@ -129,10 +145,54 @@ const TeacherModifiedClassScreen = ({ route }) => {
       } catch (error) {
         console.error('Error deleting student', error);
       }
-      await fetchStudentsInClass();
     }
+    fetchStudentsInClass();
     setSelectedStudents(new Set());
   };
+
+  const openAddStudentModal = () => {
+    setAddStudentModalVisible(true);
+  };
+
+  const closeAddStudentModal = () => {
+    setAddStudentModalVisible(false);
+  };
+
+  const toggleStudentToAddSelection = (studentId) => {
+    const newSelectedStudentsToAdd = new Set(selectedStudentsToAdd);
+    if (newSelectedStudentsToAdd.has(studentId)) {
+      newSelectedStudentsToAdd.delete(studentId);
+    } else {
+      newSelectedStudentsToAdd.add(studentId);
+    }
+    setSelectedStudentsToAdd(newSelectedStudentsToAdd);
+  };
+
+  const handleAddStudents = async () => {
+    for (let studentId of selectedStudentsToAdd) {
+      try {
+        await axios.post('/studentClass', {
+          class_id: classId,
+          student_id: studentId,
+        });
+      } catch (error) {
+        console.error('Error adding student to class:', error);
+      }
+    }
+    fetchStudentsInClass();
+    setAddStudentModalVisible(false);
+    setSelectedStudentsToAdd(new Set());
+  };
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredStudents = allStudents.filter(
+    (student) =>
+      student.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.student_code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -195,17 +255,86 @@ const TeacherModifiedClassScreen = ({ route }) => {
             <Text style={styles.header}>
               List of Students ({students.length})
             </Text>
-            <Button
-              icon="delete"
-              mode="contained"
-              onPress={handleRemoveStudents}
-              disabled={selectedStudents.size === 0}
+            <View
               style={{
-                backgroundColor: selectedStudents.size > 0 ? '#ff0000' : '#d4d1d1'
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                marginTop: 10,
+                marginBottom: 5,
               }}
             >
-              Remove Selected
-            </Button>
+              <Button
+                icon="account-plus"
+                mode="contained"
+                onPress={openAddStudentModal}
+                style={{ backgroundColor: '#00b0ff' }}
+              >
+                Add Students
+              </Button>
+              <Button
+                icon="delete"
+                mode="contained"
+                onPress={handleRemoveStudents}
+                disabled={selectedStudents.size === 0}
+                style={{
+                  backgroundColor:
+                    selectedStudents.size > 0 ? '#ff0000' : '#d4d1d1',
+                }}
+              >
+                Remove Selected
+              </Button>
+            </View>
+            <Portal>
+              <Modal
+                visible={addStudentModalVisible}
+                onDismiss={closeAddStudentModal}
+                contentContainerStyle={styles.modalContentContainer}
+              >
+                <Searchbar
+                  placeholder="Search students"
+                  onChangeText={handleSearchChange}
+                  value={searchQuery}
+                  style={styles.searchBar}
+                  inputStyle={styles.searchInputStyle}
+                />
+                <ScrollView style={styles.modalAddScrollContainer}>
+                  {filteredStudents.map((student, index) => (
+                    <List.Item
+                      key={student.student_id}
+                      title={`${student.username} (${student.student_code})`}
+                      titleStyle={{ fontSize: 14 }}
+                      style={styles.listItemStyle}
+                      left={() => (
+                        <Checkbox
+                          status={
+                            selectedStudentsToAdd.has(student.student_id)
+                              ? 'checked'
+                              : 'unchecked'
+                          }
+                          color="#00b0ff"
+                          onPress={() =>
+                            toggleStudentToAddSelection(student.student_id)
+                          }
+                          disabled={students.some(
+                            (s) => s.student_id === student.student_id
+                          )}
+                        />
+                      )}
+                    />
+                  ))}
+                </ScrollView>
+                <View style={styles.fixedFooter}>
+                  <Button
+                    mode="contained"
+                    onPress={handleAddStudents}
+                    style={{ backgroundColor: '#00b0ff' }}
+                  >
+                    Confirm Add
+                  </Button>
+                </View>
+              </Modal>
+            </Portal>
             <DataTable>
               <DataTable.Header>
                 <DataTable.Title style={{ flex: 1 }}>Select</DataTable.Title>
@@ -225,6 +354,7 @@ const TeacherModifiedClassScreen = ({ route }) => {
                             ? 'checked'
                             : 'unchecked'
                         }
+                        color="#00b0ff"
                         onPress={(event) =>
                           toggleStudentSelection(
                             student.student_class_id,
@@ -350,6 +480,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 8,
     margin: 20,
+    maxHeight: 400,
   },
   modalContent: {
     margin: 20,
@@ -357,6 +488,27 @@ const styles = StyleSheet.create({
   },
   textModal: {
     marginBottom: 10,
+  },
+  fixedFooter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
+  searchBar: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginHorizontal: 9,
+    fontSize: 14,
+    backgroundColor: '#eae8e8',
+  },
+  searchInputStyle: {
+    fontSize: 14,
+  },
+  modalAddScrollContainer: {
+    paddingLeft: 20,
   },
 });
 
