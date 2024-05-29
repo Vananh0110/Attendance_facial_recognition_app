@@ -13,6 +13,7 @@ const TeacherCalendar = ({
   eventsForSelectedDate,
 }) => {
   const [username, setUsername] = useState('');
+  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD')); // Lưu ngày hiện tại làm mặc định
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -24,8 +25,13 @@ const TeacherCalendar = ({
     fetchUserData();
   }, []);
 
+  const handleDayPress = (day) => {
+    setSelectedDate(day.dateString); // Cập nhật ngày được chọn
+    onDayPress && onDayPress(day); // Gọi callback nếu có
+  };
+
   const goToDetailClass = (classId) => {
-    navigation.navigate('TeacherDetailClass', {classId});
+    navigation.navigate('TeacherDetailClass', { classId, date: selectedDate });
   };
 
   return (
@@ -48,7 +54,7 @@ const TeacherCalendar = ({
             current={Date()}
             markingType={'multi-dot'}
             markedDates={markedDates}
-            onDayPress={onDayPress}
+            onDayPress={handleDayPress}
             style={styles.calendar}
           />
         </View>

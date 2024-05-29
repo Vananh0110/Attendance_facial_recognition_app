@@ -30,6 +30,7 @@ const TraditionalAttendance = () => {
 
     const scheduleData = await axios.get(`/class/${classId}/schedule`);
     setSchedule(scheduleData.data);
+    console.log(scheduleData.data)
 
     const attendanceData = await axios.get(`/attendance/class/${classId}`);
     const attendanceMap = {};

@@ -5,7 +5,6 @@ import {
   Searchbar,
   Text,
   ActivityIndicator,
-  Button,
 } from 'react-native-paper';
 import axios from '../../api/axios';
 import moment from 'moment';
@@ -67,10 +66,6 @@ const TeacherAttendance = ({ userId }) => {
     return moment(timeString, 'HH:mm:ss').format('HH:mm');
   };
 
-  const handleAddClass = () => {
-    navigation.navigate('TeacherAddNewClass', { userId: userId });
-  };
-
   const handleCardPress = (classId) => {
     navigation.navigate('TeacherModifiedClassScreen', {
       classId: classId,
@@ -112,14 +107,6 @@ const TeacherAttendance = ({ userId }) => {
           )}
         />
       )}
-      <Button
-        icon="plus"
-        mode="contained"
-        onPress={handleAddClass}
-        style={styles.addButton}
-      >
-        Add New Class
-      </Button>
     </View>
   );
 };
@@ -150,17 +137,6 @@ const styles = StyleSheet.create({
   },
   inputTextStyle: {
     fontSize: 14,
-  },
-  addButton: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    margin: 10,
-    backgroundColor: '#00b0ff',
-    width: '50%',
-    alignSelf: 'center',
-    marginHorizontal: '25%',
   },
 });
 

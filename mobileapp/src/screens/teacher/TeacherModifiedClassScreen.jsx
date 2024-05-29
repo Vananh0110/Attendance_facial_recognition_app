@@ -198,11 +198,11 @@ const TeacherModifiedClassScreen = ({ route }) => {
     <>
       <Appbar.Header style={{ backgroundColor: '#00B0FF' }}>
         <Appbar.BackAction
-          onPress={() => navigation.navigate('TeacherHomeScreen')}
+          onPress={() => navigation.goBack()}
           color="#ffffff"
         />
         <Appbar.Content
-          title="Class Detail"
+          title="Class Modified"
           titleStyle={{
             fontSize: 18,
             color: '#ffffff',
