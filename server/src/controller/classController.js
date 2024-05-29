@@ -123,7 +123,8 @@ const calculateMeetingDays = (startDate, endDate, dayOfWeek) => {
   start.setDate(start.getDate() + ((day - start.getDay() + 7) % 7));
 
   while (start <= end) {
-    dates.push(new Date(start));
+    const correctDate = new Date(start.getTime() - (start.getTimezoneOffset() * 60000));
+    dates.push(correctDate);
     start.setDate(start.getDate() + 7);
   }
 
