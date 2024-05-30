@@ -227,25 +227,25 @@ const TraditionalAttendance = ({ route }) => {
         <ScrollView style={styles.container}>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title style={{ flex: 1 }}>No.</DataTable.Title>
-              <DataTable.Title style={{ flex: 4 }}>Name</DataTable.Title>
-              <DataTable.Title style={{ flex: 2 }}>ID</DataTable.Title>
-              <DataTable.Title style={{ flex: 2 }}>Status</DataTable.Title>
+              <DataTable.Title style={{ flex: 1}}>No.</DataTable.Title>
+              <DataTable.Title style={{ flex: 4, justifyContent: 'center' }}>Name</DataTable.Title>
+              <DataTable.Title style={{ flex: 2, justifyContent: 'center' }}>ID</DataTable.Title>
+              <DataTable.Title style={{ flex: 2, justifyContent: 'center' }}>Status</DataTable.Title>
             </DataTable.Header>
             {filteredStudents.map((student, index) => (
               <TouchableOpacity key={index} onPress={() => showModal(student)}>
                 <DataTable.Row>
-                  <DataTable.Cell style={{ flex: 1 }}>
+                  <DataTable.Cell style={{ flex: 1}}>
                     {index + 1}
                   </DataTable.Cell>
                   <DataTable.Cell style={{ flex: 4 }}>
                     {student.username}
                   </DataTable.Cell>
-                  <DataTable.Cell style={{ flex: 2 }}>
+                  <DataTable.Cell style={{ flex: 2, justifyContent: 'center' }}>
                     {student.student_code}
                   </DataTable.Cell>
 
-                  <DataTable.Cell style={{ flex: 2 }}>
+                  <DataTable.Cell style={{ flex: 2, justifyContent: 'center' }}>
                     <View style={styles.selectContainer}>
                       <Dropdown
                         style={styles.dropdown}
