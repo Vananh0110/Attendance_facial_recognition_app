@@ -7,7 +7,7 @@ import moment from 'moment';
 import styles from '../../assets/styles/styles';
 import { useNavigation } from '@react-navigation/native';
 
-const TeacherCalendar = ({
+const StudentCalendar = ({
   markedDates,
   onDayPress,
   eventsForSelectedDate,
@@ -15,6 +15,7 @@ const TeacherCalendar = ({
   const [username, setUsername] = useState('');
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD')); // Lưu ngày hiện tại làm mặc định
   const navigation = useNavigation();
+  console.log(eventsForSelectedDate);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,7 +32,7 @@ const TeacherCalendar = ({
   };
 
   const goToDetailClass = (classId) => {
-    navigation.navigate('TeacherDetailClass', { classId, date: selectedDate });
+    navigation.navigate('StudentDetailClass', { classId, date: selectedDate });
   };
 
   return (
@@ -92,4 +93,4 @@ const TeacherCalendar = ({
   );
 };
 
-export default TeacherCalendar;
+export default StudentCalendar;

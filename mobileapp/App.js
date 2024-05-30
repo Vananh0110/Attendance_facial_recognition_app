@@ -14,6 +14,10 @@ import QrCodeAttendance from './src/screens/teacher/QrCodeAttendance.jsx';
 import FaceRecognitionAttendance from './src/screens/teacher/FaceRecognitionAttendance.jsx';
 import TeacherReportAttendanceDetail from './src/screens/teacher/TeacherReportAttendanceDetail.jsx';
 import TeacherAttendanceClass from './src/screens/teacher/TeacherAttendanceClass.jsx';
+import StudentCalendar from './src/components/student/StudentCalendar.jsx';
+import StudentClass from './src/components/student/StudentClass.jsx';
+import StudentReport from './src/components/student/StudentReport.jsx';
+import StudentDetailClass from './src/screens/student/StudentDetailClass.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +25,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="TeacherHomeScreen"
+        initialRouteName="StudentHomeScreen"
         screenOptions={{
           statusBarColor: '#00B0FF',
           headerStyle: {
@@ -105,6 +109,30 @@ function App() {
         <Stack.Screen
           name="StudentHomeScreen"
           component={StudentHomeScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="StudentCalendar"
+          component={StudentCalendar}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="StudentClass"
+          component={StudentClass}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="StudentReport"
+          component={StudentReport}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="StudentDetailClass"
+          component={StudentDetailClass}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
