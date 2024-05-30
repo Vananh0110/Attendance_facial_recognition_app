@@ -13,6 +13,7 @@ import TraditionalAttendance from './src/screens/teacher/TraditionalAttendance.j
 import QrCodeAttendance from './src/screens/teacher/QrCodeAttendance.jsx';
 import FaceRecognitionAttendance from './src/screens/teacher/FaceRecognitionAttendance.jsx';
 import TeacherReportAttendanceDetail from './src/screens/teacher/TeacherReportAttendanceDetail.jsx';
+import TeacherAttendanceClass from './src/screens/teacher/TeacherAttendanceClass.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +92,12 @@ function App() {
         <Stack.Screen
           name="TeacherReportAttendanceDetail"
           component={TeacherReportAttendanceDetail}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="TeacherAttendanceClass"
+          component={TeacherAttendanceClass}
           options={{ headerShown: false }}
         />
 
