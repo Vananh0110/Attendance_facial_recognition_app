@@ -1,13 +1,16 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-const TeacherReportAttendanceDetail = () => {
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+const TeacherReportAttendanceDetail = ({ route }) => {
+  const { classId, date } = route.params;
+  console.log(classId, date);
+
   return (
     <>
-    <View>
+      <View>
         <Text>Detail</Text>
-    </View>
+      </View>
     </>
-  )
-}
+  );
+};
 
-export default TeacherReportAttendanceDetail
+export default TeacherReportAttendanceDetail;

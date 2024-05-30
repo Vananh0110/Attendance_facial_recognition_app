@@ -121,7 +121,7 @@ const TeacherHomeScreen = () => {
       case 'attendance':
         return <TeacherAttendance userId={userId} />;
       case 'report':
-        return <TeacherReport />;
+        return <TeacherReport userId={userId}/>;
       default:
         return null;
     }
