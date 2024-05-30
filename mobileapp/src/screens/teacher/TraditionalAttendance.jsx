@@ -16,6 +16,8 @@ import {
   Menu,
   Modal,
   Searchbar,
+  Dialog,
+  Paragraph,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import axios from '../../api/axios';
@@ -23,8 +25,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import moment from 'moment';
 
 const TraditionalAttendance = ({ route }) => {
-  const { classId } = route.params;
-  const { date } = route.params;
+  const { classId, date } = route.params;
   const navigation = useNavigation();
 
   const [students, setStudents] = useState([]);
@@ -33,23 +34,40 @@ const TraditionalAttendance = ({ route }) => {
   const [visible, setVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [attendance, setAttendance] = useState({});
+  const [editMode, setEditMode] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
 
   useEffect(() => {
     fetchStudents();
   }, []);
 
   const fetchStudents = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const studentsResponse = await axios.get(
         `/studentClass/getStudentInClass/${classId}`
       );
       setStudents(studentsResponse.data);
-      console.log(studentsResponse.data);
+      const attendanceResponse = await axios.get(
+        `/attendance/class/${classId}/${date}`
+      );
+      if (attendanceResponse.data.length > 0) {
+        const newAttendance = {};
+        attendanceResponse.data.forEach((att) => {
+          newAttendance[att.student_class_id] = {
+            status: att.status,
+            attendance_id: att.attendance_id,
+          };
+        });
+        setAttendance(newAttendance);
+        setEditMode(true);
+      } else {
+        setEditMode(false);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      setError('Failed to load data, please try again.');
       setLoading(false);
     }
   };
@@ -83,14 +101,17 @@ const TraditionalAttendance = ({ route }) => {
   const handleStatusChange = (studentClassId, value) => {
     setAttendance({
       ...attendance,
-      [studentClassId]: value,
+      [studentClassId]: { ...attendance[studentClassId], status: value },
     });
   };
 
   const setAllToP = () => {
     const newAttendance = {};
     students.forEach((student) => {
-      newAttendance[student.student_class_id] = 'P';
+      newAttendance[student.student_class_id] = {
+        ...attendance[student.student_class_id],
+        status: 'P',
+      };
     });
     setAttendance(newAttendance);
   };
@@ -102,35 +123,45 @@ const TraditionalAttendance = ({ route }) => {
   const submitAttendance = async () => {
     const timeAttended = moment().format('HH:mm');
     const dateAttended = formatDate(date);
-    console.log('Date attended:', date);
+    console.log('Date attended:', dateAttended);
     console.log('Time attended:', timeAttended);
     console.log('Attendance data before sending:', attendance);
 
+    let isAllSuccess = true;
+
     for (const studentClassId in attendance) {
-      const status = attendance[studentClassId];
-      console.log(
-        `About to send data for studentClassId: ${studentClassId} with status: ${status}`
-      );
-      await axios
-        .post('/attendance', {
-          student_class_id: studentClassId,
-          status: status,
-          date_attended: dateAttended,
-          time_attended: timeAttended,
-        })
-        .then((response) => {
+      const { status, attendance_id } = attendance[studentClassId];
+      const attendanceData = {
+        student_class_id: studentClassId,
+        status: status,
+        date_attended: dateAttended,
+        time_attended: timeAttended,
+      };
+
+      try {
+        if (editMode && attendance_id) {
+          await axios.put(`/attendance/${attendance_id}`, attendanceData);
+        } else {
           console.log(
-            `Response for studentClassId ${studentClassId}:`,
-            response.data
+            `Submitting new attendance for studentClassId: ${studentClassId}`
           );
-        })
-        .catch((error) => {
-          console.error(
-            `Error submitting attendance for studentClassId ${studentClassId}:`,
-            error
-          );
-        });
+          await axios.post('/attendance', attendanceData);
+        }
+      } catch (error) {
+        console.error(
+          `Error processing attendance for studentClassId ${studentClassId}:`,
+          error
+        );
+        isAllSuccess = false;
+      }
     }
+
+    if (isAllSuccess) {
+      setDialogMessage('Attendance has been successfully updated.');
+    } else {
+      setDialogMessage('Some entries failed to update.');
+    }
+    setDialogVisible(true);
   };
 
   const renderItem = (item) => {
@@ -139,6 +170,13 @@ const TraditionalAttendance = ({ route }) => {
         <Text style={styles.itemTextStyle}>{item.label}</Text>
       </View>
     );
+  };
+
+  const navigateToReport = () => {
+    navigation.navigate('TeacherReportAttendanceDetail', {
+      classId: classId,
+      date: date,
+    });
   };
 
   return (
@@ -152,6 +190,11 @@ const TraditionalAttendance = ({ route }) => {
           <Appbar.Content
             title="Traditional Attendance"
             titleStyle={styles.titleStyle}
+          />
+          <Appbar.Action
+            icon="chart-bar"
+            color="#ffffff"
+            onPress={() => navigateToReport()}
           />
         </Appbar.Header>
         <View style={styles.headerContainer}>
@@ -201,6 +244,7 @@ const TraditionalAttendance = ({ route }) => {
                   <DataTable.Cell style={{ flex: 2 }}>
                     {student.student_code}
                   </DataTable.Cell>
+
                   <DataTable.Cell style={{ flex: 2 }}>
                     <View style={styles.selectContainer}>
                       <Dropdown
@@ -212,7 +256,7 @@ const TraditionalAttendance = ({ route }) => {
                         placeholder=""
                         labelField="label"
                         valueField="value"
-                        value={attendance[student.student_class_id]}
+                        value={attendance[student.student_class_id]?.status}
                         onChange={(item) =>
                           handleStatusChange(
                             student.student_class_id,
@@ -229,6 +273,25 @@ const TraditionalAttendance = ({ route }) => {
           </DataTable>
 
           <Portal>
+            <Dialog
+              visible={dialogVisible}
+              onDismiss={() => setDialogVisible(false)}
+              style={styles.dialogStyle}
+            >
+              <Dialog.Title>Notification</Dialog.Title>
+              <Dialog.Content>
+                <Paragraph>{dialogMessage}</Paragraph>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button
+                  onPress={() => setDialogVisible(false)}
+                  labelStyle={{ color: '#00b0ff' }}
+                  rippleColor="#d3e3ff"
+                >
+                  OK
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
             <Modal
               visible={visible}
               onDismiss={hideModal}
@@ -368,5 +431,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: '#00b0ff',
+  },
+  dialogStyle: {
+    backgroundColor: '#ffffff',
   },
 });
