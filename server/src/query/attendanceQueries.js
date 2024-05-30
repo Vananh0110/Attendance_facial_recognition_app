@@ -21,9 +21,18 @@ const updateAttendanceQuery = `
 
 const deleteAttendanceQuery = 'DELETE FROM attendance WHERE attendance_id = $1';
 
+const getAttendanceByClassAndDateQuery = `
+        SELECT a.attendance_id, a.student_class_id, u.user_id, u.username, u.email, s.student_code, s.student_code, a.date_attended, a.time_attended, a.status
+        FROM attendance a
+        JOIN student_class sc ON a.student_class_id = sc.student_class_id
+        JOIN students s ON sc.student_id = s.student_id
+        JOIN users u ON s.user_id = u.user_id
+        WHERE sc.class_id = $1 AND a.date_attended = $2
+`;
 module.exports = {
-    addAttendanceQuery,
-    getAttendanceByClassQuery,
-    updateAttendanceQuery,
-    deleteAttendanceQuery
-}
+  addAttendanceQuery,
+  getAttendanceByClassQuery,
+  updateAttendanceQuery,
+  deleteAttendanceQuery,
+  getAttendanceByClassAndDateQuery
+};
