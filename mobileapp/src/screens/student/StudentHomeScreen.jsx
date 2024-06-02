@@ -1,123 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
-import { Appbar, Avatar, BottomNavigation } from 'react-native-paper';
-import axios from '../../api/axios';
-import moment from 'moment';
+import {
+  Appbar,
+  Avatar,
+  BottomNavigation,
+  Menu,
+  Provider,
+  Portal,
+  Dialog,
+  TouchableRipple,
+  Button,
+} from 'react-native-paper';
+import { Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StudentCalendar from '../../components/student/StudentCalendar';
 import StudentClass from '../../components/student/StudentClass';
 import StudentReport from '../../components/student/StudentReport';
+import { useNavigation } from '@react-navigation/native';
 
 const StudentHomeScreen = () => {
   const [index, setIndex] = useState(0);
   const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');
   const [routes] = useState([
     { key: 'calendar', title: 'Home', icon: 'calendar' },
     { key: 'class', title: 'Class', icon: 'book' },
     { key: 'report', title: 'Report', icon: 'message' },
   ]);
-
-  const [markedDates, setMarkedDates] = useState({});
-  const [username, setUsername] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format('YYYY-MM-DD')
-  );
-  const [eventsForSelectedDate, setEventsForSelectedDate] = useState([]);
   const [appBarTitle, setAppBarTitle] = useState(routes[0].title);
+  const [visible, setVisible] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    fetchClasses();
-  }, []);
-
-  const fetchClasses = async () => {
-    const userJson = await AsyncStorage.getItem('user');
-    const user = JSON.parse(userJson);
-    const userId = user.user_id;
-    setUserId(userId);
-    setUsername(user.username);
-    setAvatarUrl(user.avatar_url);
-    try {
-      const response = await axios.get(`/studentClass/getClass/${userId}`);
-      const clsData = response.data;
-      let markedDatesObject = {...markedDates};
-      clsData.forEach(cls => {
-        const eventDates = generateEventDates(cls);
-        Object.keys(eventDates).forEach(date => {
-          if (!markedDatesObject[date]) {
-            markedDatesObject[date] = { dots: [] };
-          }
-          markedDatesObject[date].dots = markedDatesObject[date].dots.concat(eventDates[date].dots);
-        });
-      });
-      setMarkedDates(markedDatesObject);
-      setEventsForSelectedDate(markedDatesObject[selectedDate]?.dots || []);
-    } catch (error) {
-      console.error('Failed to fetch classes:', error);
-    }
-  };
-  
-
-  const generateEventDates = (cls) => {
-    let localMarkedDates = {};
-    let startDate = moment(cls.date_start);
-    let endDate = moment(cls.date_finish);
-    let current = startDate.clone().day(cls.day_of_week % 7);
-  
-    if (current.isBefore(startDate, 'day')) {
-      current.add(1, 'weeks');
-    }
-  
-    while (current.isSameOrBefore(endDate)) {
-      const eventDateStr = current.format('YYYY-MM-DD');
-      if (!localMarkedDates[eventDateStr]) {
-        localMarkedDates[eventDateStr] = { dots: [] };
-      }
-      localMarkedDates[eventDateStr].dots.push({
-        key: `${cls.class_id}-${cls.time_start}`,
-        color: 'red',
-        selectedDotColor: 'blue',
-        class_code: cls.class_code,
-        course_code: cls.course_code,
-        course_name: cls.course_name,
-        time_start: cls.time_start,
-        time_finish: cls.time_finish,
-      });
-      current.add(1, 'weeks');
-    }
-  
-    return localMarkedDates;
-  };
-  
-  const onDayPress = (day) => {
-    const newMarkedDates = { ...markedDates };
-    if (newMarkedDates[selectedDate]) {
-      newMarkedDates[selectedDate] = {
-        ...newMarkedDates[selectedDate],
-        selected: false,
-      };
-    }
-    newMarkedDates[day.dateString] = {
-      ...(newMarkedDates[day.dateString] || {}),
-      selected: true,
-      selectedColor: '#0da1fc',
+    const fetchUserData = async () => {
+      const userJson = await AsyncStorage.getItem('user');
+      const user = JSON.parse(userJson);
+      setUserId(user.user_id);
+      setUsername(user.username);
+      setAvatarUrl(user.avatar_url);
     };
-    setSelectedDate(day.dateString);
-    setMarkedDates(newMarkedDates);
-    setEventsForSelectedDate(newMarkedDates[day.dateString]?.dots || []);
-  };
+    fetchUserData();
+  }, []);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'calendar':
-        return (
-          <StudentCalendar
-            markedDates={markedDates}
-            onDayPress={onDayPress}
-            eventsForSelectedDate={eventsForSelectedDate}
-          />
-        );
+        return <StudentCalendar userId={userId} username={username} />;
       case 'class':
         return <StudentClass userId={userId} />;
       case 'report':
@@ -132,50 +65,116 @@ const StudentHomeScreen = () => {
     setAppBarTitle(routes[index].title);
   };
 
+  const handleSignOut = async () => {
+    setShowDialog(false);
+    await AsyncStorage.removeItem('user');
+    navigation.navigate('Welcome');
+  };
+
+  const handleProfilePress = () => {
+    closeMenu();
+    navigation.navigate('StudentProfile');
+  };
+
   return (
     <>
-      <Appbar.Header style={{ backgroundColor: '#00B0FF' }}>
-        <Appbar.Content
-          title={appBarTitle}
-          titleStyle={{
-            fontSize: 20,
-            textAlign: 'center',
-            color: '#ffffff',
-            fontWeight: 'bold',
+      <Provider>
+        <Appbar.Header style={{ backgroundColor: '#00B0FF' }}>
+          <Appbar.Content
+            title={appBarTitle}
+            titleStyle={{
+              fontSize: 20,
+              textAlign: 'center',
+              color: '#ffffff',
+              fontWeight: 'bold',
+            }}
+          />
+          <Menu
+            visible={visible}
+            onDismiss={closeMenu}
+            contentStyle={{ fontSize: 14 }}
+            style={{
+              marginTop: 50,
+            }}
+            anchor={
+              <TouchableRipple onPress={openMenu}>
+                <Appbar.Action
+                  icon={() =>
+                    avatarUrl ? (
+                      <Avatar.Image size={30} source={{ uri: avatarUrl }} />
+                    ) : (
+                      <Avatar.Text
+                        size={30}
+                        label={username ? username[0] : ''}
+                        style={{ backgroundColor: 'pink', fontWeight: 'bold' }}
+                      />
+                    )
+                  }
+                />
+              </TouchableRipple>
+            }
+          >
+            <Menu.Item
+              onPress={handleProfilePress}
+              title="Profile"
+              leadingIcon="account-edit"
+              titleStyle={{ fontSize: 14 }}
+            />
+            <Menu.Item
+              onPress={() => setShowDialog(true)}
+              title="Sign Out"
+              leadingIcon="account-arrow-right"
+              titleStyle={{ fontSize: 14 }}
+            />
+          </Menu>
+        </Appbar.Header>
+        <Portal>
+          <Dialog
+            visible={showDialog}
+            onDismiss={() => setShowDialog(false)}
+            style={{ backgroundColor: '#ffffff' }}
+          >
+            <Dialog.Title>Confirm Sign Out</Dialog.Title>
+            <Dialog.Content>
+              <Text>Are you sure you want to sign out?</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                onPress={() => setShowDialog(false)}
+                labelStyle={{ color: '#11182744' }}
+                rippleColor="#d3e3ff"
+              >
+                Cancel
+              </Button>
+              <Button
+                onPress={handleSignOut}
+                labelStyle={{ color: '#00B0FF' }}
+                rippleColor="#d3e3ff"
+              >
+                OK
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+        <BottomNavigation
+          navigationState={{ index, routes }}
+          onIndexChange={handleIndexChange}
+          renderScene={renderScene}
+          renderIcon={({ route, focused, color }) => (
+            <MaterialCommunityIcons name={route.icon} color={color} size={24} />
+          )}
+          activeColor="#204876"
+          inactiveColor="#4b4b4b"
+          barStyle={{
+            backgroundColor: '#ffffff',
+            borderWidth: 0.5,
+            borderColor: '#ccccccac',
+          }}
+          activeIndicatorStyle={{
+            backgroundColor: '#D3E3FF',
           }}
         />
-        <Appbar.Action
-          icon={() =>
-            avatarUrl ? (
-              <Avatar.Image size={30} source={{ uri: avatarUrl }} />
-            ) : (
-              <Avatar.Text
-                size={30}
-                label={username ? username[0] : ''}
-                style={{ backgroundColor: 'pink', fontWeight: 'bold' }}
-              />
-            )
-          }
-        />
-      </Appbar.Header>
-      <BottomNavigation
-        navigationState={{ index, routes }}
-        onIndexChange={handleIndexChange}
-        renderScene={renderScene}
-        renderIcon={({ route, focused, color }) => (
-          <MaterialCommunityIcons name={route.icon} color={color} size={24} />
-        )}
-        activeColor="#204876"
-        inactiveColor="#4b4b4b"
-        barStyle={{
-          backgroundColor: '#ffffff',
-          borderWidth: 0.5,
-          borderColor: '#ccccccac',
-        }}
-        activeIndicatorStyle={{
-          backgroundColor: '#D3E3FF',
-        }}
-      />
+      </Provider>
     </>
   );
 };

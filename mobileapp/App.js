@@ -14,10 +14,12 @@ import QrCodeAttendance from './src/screens/teacher/QrCodeAttendance.jsx';
 import FaceRecognitionAttendance from './src/screens/teacher/FaceRecognitionAttendance.jsx';
 import TeacherReportAttendanceDetail from './src/screens/teacher/TeacherReportAttendanceDetail.jsx';
 import TeacherAttendanceClass from './src/screens/teacher/TeacherAttendanceClass.jsx';
+import TeacherProfile from './src/screens/teacher/TeacherProfile.jsx';
 import StudentCalendar from './src/components/student/StudentCalendar.jsx';
 import StudentClass from './src/components/student/StudentClass.jsx';
 import StudentReport from './src/components/student/StudentReport.jsx';
 import StudentDetailClass from './src/screens/student/StudentDetailClass.jsx';
+import StudentProfile from './src/screens/student/StudentProfile.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -105,6 +107,12 @@ function App() {
           options={{ headerShown: false }}
         />
 
+        <Stack.Screen
+          name="TeacherProfile"
+          component={TeacherProfile}
+          options={{ headerShown: false }}
+        />
+
         {/* Student */}
         <Stack.Screen
           name="StudentHomeScreen"
@@ -133,6 +141,11 @@ function App() {
         <Stack.Screen
           name="StudentDetailClass"
           component={StudentDetailClass}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="StudentProfile"
+          component={StudentProfile}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
