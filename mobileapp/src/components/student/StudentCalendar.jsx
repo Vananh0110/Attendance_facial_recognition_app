@@ -13,9 +13,10 @@ const StudentCalendar = ({
   eventsForSelectedDate,
 }) => {
   const [username, setUsername] = useState('');
-  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD')); // Lưu ngày hiện tại làm mặc định
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format('YYYY-MM-DD')
+  ); // Lưu ngày hiện tại làm mặc định
   const navigation = useNavigation();
-  console.log(eventsForSelectedDate);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -61,25 +62,33 @@ const StudentCalendar = ({
         </View>
         <View style={{ padding: 10 }}>
           {eventsForSelectedDate.length > 0 ? (
-            eventsForSelectedDate.map((event, index) => (
-              <Card
-                style={styles.card}
-                key={index}
-                onPress={() => goToDetailClass(event.key)}
-              >
-                <Card.Content>
-                  <Title
-                    style={styles.title}
-                  >{`${event.course_code} - ${event.course_name}`}</Title>
-                  <Paragraph style={styles.text}>
-                    Class code: {event.class_code}
-                  </Paragraph>
-                  <Paragraph style={styles.text}>
-                    Time: {event.time_start} - {event.time_finish}
-                  </Paragraph>
-                </Card.Content>
-              </Card>
-            ))
+            eventsForSelectedDate
+              .sort(
+                (a, b) =>
+                  moment(a.time_start, 'HH:mm') - moment(b.time_start, 'HH:mm')
+              )
+              .map((event, index) => (
+                <Card
+                  style={styles.card}
+                  key={index}
+                  onPress={() => {
+                    const classId = event.key.split('-')[0];
+                    goToDetailClass(classId);
+                  }}
+                >
+                  <Card.Content>
+                    <Title
+                      style={styles.title}
+                    >{`${event.course_code} - ${event.course_name}`}</Title>
+                    <Paragraph style={styles.text}>
+                      Class code: {event.class_code}
+                    </Paragraph>
+                    <Paragraph style={styles.text}>
+                      Time: {event.time_start} - {event.time_finish}
+                    </Paragraph>
+                  </Card.Content>
+                </Card>
+              ))
           ) : (
             <Card style={styles.card}>
               <Card.Content>

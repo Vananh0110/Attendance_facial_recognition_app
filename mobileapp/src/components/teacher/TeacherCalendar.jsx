@@ -60,7 +60,7 @@ const TeacherCalendar = ({
         </View>
         <View style={{ padding: 10 }}>
           {eventsForSelectedDate.length > 0 ? (
-            eventsForSelectedDate.map((event, index) => (
+            eventsForSelectedDate.sort((a, b) => moment(a.time_start, 'HH:mm') - moment(b.time_start, 'HH:mm')).map((event, index) => (
               <Card
                 style={styles.card}
                 key={index}

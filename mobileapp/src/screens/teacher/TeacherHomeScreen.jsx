@@ -45,10 +45,15 @@ const TeacherHomeScreen = () => {
       const filteredData = response.data.filter(
         (cls) => cls.user_id === userId
       );
-      let markedDatesObject = {};
-      filteredData.forEach((cls) => {
+      let markedDatesObject = {...markedDates};
+      filteredData.forEach(cls => {
         const eventDates = generateEventDates(cls);
-        markedDatesObject = { ...markedDatesObject, ...eventDates };
+        Object.keys(eventDates).forEach(date => {
+          if (!markedDatesObject[date]) {
+            markedDatesObject[date] = { dots: [] };
+          }
+          markedDatesObject[date].dots = markedDatesObject[date].dots.concat(eventDates[date].dots);
+        });
       });
       setMarkedDates(markedDatesObject);
       setEventsForSelectedDate(markedDatesObject[selectedDate]?.dots || []);
@@ -73,7 +78,7 @@ const TeacherHomeScreen = () => {
         localMarkedDates[eventDateStr] = { dots: [] };
       }
       localMarkedDates[eventDateStr].dots.push({
-        key: cls.class_id,
+        key: `${cls.class_id}-${cls.time_start}`,
         color: 'red',
         selectedDotColor: 'blue',
         class_code: cls.class_code,

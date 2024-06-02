@@ -41,11 +41,15 @@ const StudentHomeScreen = () => {
     try {
       const response = await axios.get(`/studentClass/getClass/${userId}`);
       const clsData = response.data;
-      console.log(clsData);
-      let markedDatesObject = {};
-      clsData.forEach((cls) => {
+      let markedDatesObject = {...markedDates};
+      clsData.forEach(cls => {
         const eventDates = generateEventDates(cls);
-        markedDatesObject = { ...markedDatesObject, ...eventDates };
+        Object.keys(eventDates).forEach(date => {
+          if (!markedDatesObject[date]) {
+            markedDatesObject[date] = { dots: [] };
+          }
+          markedDatesObject[date].dots = markedDatesObject[date].dots.concat(eventDates[date].dots);
+        });
       });
       setMarkedDates(markedDatesObject);
       setEventsForSelectedDate(markedDatesObject[selectedDate]?.dots || []);
@@ -53,6 +57,7 @@ const StudentHomeScreen = () => {
       console.error('Failed to fetch classes:', error);
     }
   };
+  
 
   const generateEventDates = (cls) => {
     let localMarkedDates = {};
@@ -70,7 +75,7 @@ const StudentHomeScreen = () => {
         localMarkedDates[eventDateStr] = { dots: [] };
       }
       localMarkedDates[eventDateStr].dots.push({
-        key: cls.class_id,
+        key: `${cls.class_id}-${cls.time_start}`,
         color: 'red',
         selectedDotColor: 'blue',
         class_code: cls.class_code,
