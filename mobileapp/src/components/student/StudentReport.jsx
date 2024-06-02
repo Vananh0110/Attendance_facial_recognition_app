@@ -20,11 +20,9 @@ const StudentReport = ({ userId }) => {
   const fetchClasses = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/class/all');
-      const filteredData = response.data.filter(
-        (cls) => cls.user_id === userId
-      );
-      setClasses(filteredData);
+      const response = await axios.get(`/studentClass/getClass/${userId}`);
+      const clsData = response.data;
+      setClasses(clsData);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch classes', error);
@@ -88,7 +86,7 @@ const StudentReport = ({ userId }) => {
   };
 
   const handleDatePress = (classId, date) => {
-    navigation.navigate('StudentReportAttendanceDetail', {
+    navigation.navigate('TeacherReportAttendanceDetail', {
       classId: classId,
       date: date,
     });
