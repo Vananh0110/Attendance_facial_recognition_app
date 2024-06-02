@@ -10,6 +10,7 @@ import {
   TouchableRipple,
   Button,
 } from 'react-native-paper';
+import { Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TeacherCalendar from '../../components/teacher/TeacherCalendar';
 import TeacherAttendance from '../../components/teacher/TeacherAttendance';

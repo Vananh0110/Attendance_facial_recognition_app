@@ -27,7 +27,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="StudentHomeScreen"
+        initialRouteName="TeacherHomeScreen"
         screenOptions={{
           statusBarColor: '#00B0FF',
           headerStyle: {
