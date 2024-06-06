@@ -20,6 +20,7 @@ import StudentClass from './src/components/student/StudentClass.jsx';
 import StudentReport from './src/components/student/StudentReport.jsx';
 import StudentDetailClass from './src/screens/student/StudentDetailClass.jsx';
 import StudentProfile from './src/screens/student/StudentProfile.jsx';
+import QrCodeDisplayScreen from './src/screens/teacher/QrCodeDisplayScreen.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +28,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="TeacherHomeScreen"
+        initialRouteName="Welcome"
         screenOptions={{
           statusBarColor: '#00B0FF',
           headerStyle: {
@@ -110,6 +111,12 @@ function App() {
         <Stack.Screen
           name="TeacherProfile"
           component={TeacherProfile}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="QrCodeDisplayScreen"
+          component={QrCodeDisplayScreen}
           options={{ headerShown: false }}
         />
 
