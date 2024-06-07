@@ -100,7 +100,9 @@ const StudentDetailScreen = ({ route }) => {
     return moment(timeString, 'HH:mm:ss').format('HH:mm');
   };
 
-  const navigateToQrScanner = () => {};
+  const navigateToQrScanner = () => {
+    navigation.navigate('StudentQrCodeScanner', { classId, date });
+  };
 
   return (
     <>

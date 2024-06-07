@@ -21,6 +21,7 @@ import StudentReport from './src/components/student/StudentReport.jsx';
 import StudentDetailClass from './src/screens/student/StudentDetailClass.jsx';
 import StudentProfile from './src/screens/student/StudentProfile.jsx';
 import QrCodeDisplayScreen from './src/screens/teacher/QrCodeDisplayScreen.jsx';
+import StudentQrCodeScanner from './src/screens/student/StudentQrCodeScanner.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -153,6 +154,11 @@ function App() {
         <Stack.Screen
           name="StudentProfile"
           component={StudentProfile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="StudentQrCodeScanner"
+          component={StudentQrCodeScanner}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

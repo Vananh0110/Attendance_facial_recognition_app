@@ -136,6 +136,7 @@ const TraditionalAttendance = ({ route }) => {
         status: status,
         date_attended: dateAttended,
         time_attended: timeAttended,
+        attendance_type: 'traditional',
       };
 
       try {
@@ -227,15 +228,21 @@ const TraditionalAttendance = ({ route }) => {
         <ScrollView style={styles.container}>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title style={{ flex: 1}}>No.</DataTable.Title>
-              <DataTable.Title style={{ flex: 4, justifyContent: 'center' }}>Name</DataTable.Title>
-              <DataTable.Title style={{ flex: 2, justifyContent: 'center' }}>ID</DataTable.Title>
-              <DataTable.Title style={{ flex: 2, justifyContent: 'center' }}>Status</DataTable.Title>
+              <DataTable.Title style={{ flex: 1 }}>No.</DataTable.Title>
+              <DataTable.Title style={{ flex: 4, justifyContent: 'center' }}>
+                Name
+              </DataTable.Title>
+              <DataTable.Title style={{ flex: 2, justifyContent: 'center' }}>
+                ID
+              </DataTable.Title>
+              <DataTable.Title style={{ flex: 2, justifyContent: 'center' }}>
+                Status
+              </DataTable.Title>
             </DataTable.Header>
             {filteredStudents.map((student, index) => (
               <TouchableOpacity key={index} onPress={() => showModal(student)}>
                 <DataTable.Row>
-                  <DataTable.Cell style={{ flex: 1}}>
+                  <DataTable.Cell style={{ flex: 1 }}>
                     {index + 1}
                   </DataTable.Cell>
                   <DataTable.Cell style={{ flex: 4 }}>

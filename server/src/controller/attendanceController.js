@@ -2,7 +2,13 @@ const pool = require('../../db');
 const queries = require('../query/attendanceQueries');
 
 const addAttendance = async (req, res) => {
-  const { student_class_id, date_attended, time_attended, status } = req.body;
+  const {
+    student_class_id,
+    date_attended,
+    time_attended,
+    status,
+    attendance_type,
+  } = req.body;
 
   try {
     const result = await pool.query(queries.addAttendanceQuery, [
@@ -10,6 +16,36 @@ const addAttendance = async (req, res) => {
       date_attended,
       time_attended,
       status,
+      attendance_type,
+    ]);
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const addQrAttendance = async (req, res) => {
+  const {
+    student_class_id,
+    date_attended,
+    time_attended,
+    status,
+    attendance_type,
+    expiration_time,
+  } = req.body;
+  const expirationDate = new Date(expiration_time);
+  const now = new Date();
+  if (now > expirationDate) {
+    return res.status(400).json({ message: 'QR code has expired' });
+  }
+  try {
+    const result = await pool.query(queries.addAttendanceQuery, [
+      student_class_id,
+      date_attended,
+      time_attended,
+      status,
+      attendance_type,
     ]);
     res.status(200).json(result.rows[0]);
   } catch (error) {
@@ -82,4 +118,5 @@ module.exports = {
   updateAttendance,
   deleteAttendance,
   getAttendanceByClassAndDate,
+  addQrAttendance,
 };

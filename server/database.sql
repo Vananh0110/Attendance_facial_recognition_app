@@ -82,6 +82,7 @@ CREATE TABLE attendance (
     date_attended DATE NOT NULL,
     time_attended TIME NOT NULL,
     status VARCHAR(10) NOT NULL,
+    attendance_type VARCHAR(30),
     PRIMARY KEY (attendance_id),
     CONSTRAINT fk_attendance_student_class FOREIGN KEY (student_class_id) REFERENCES student_class (student_class_id) ON DELETE SET NULL
 );

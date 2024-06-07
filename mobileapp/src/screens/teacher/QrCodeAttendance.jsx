@@ -27,7 +27,8 @@ const QrCodeAttendance = ({ route }) => {
       return;
     }
     setError('');
-    navigation.navigate('QrCodeDisplayScreen', { classId, date, duration });
+    const expirationTime = moment(date).add(parseInt(duration, 10), 'minutes').toISOString();
+    navigation.navigate('QrCodeDisplayScreen', { classId, date, duration, expirationTime });
   };
 
   const navigateToReport = () => {

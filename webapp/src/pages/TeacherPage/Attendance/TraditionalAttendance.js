@@ -112,6 +112,7 @@ const TraditionalAttendance = () => {
             minute: '2-digit',
           }),
           status,
+          attendance_type: 'traditional'
         });
         setAttendance((prev) => ({ ...prev, [key]: status }));
       } catch (error) {

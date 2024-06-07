@@ -9,8 +9,7 @@ const QrCodeDisplayScreen = ({ route }) => {
   const { classId, date, duration } = route.params;
   const navigation = useNavigation();
   const [qrCode, setQrCode] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(duration * 60); // thời gian đếm ngược tính bằng giây
-
+  const [timeLeft, setTimeLeft] = useState(duration * 60);
   useEffect(() => {
     const expirationTime = moment().add(duration, 'minutes').toISOString();
     const data = JSON.stringify({ classId, date, expirationTime });
