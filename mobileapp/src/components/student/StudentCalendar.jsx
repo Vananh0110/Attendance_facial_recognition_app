@@ -96,7 +96,7 @@ const StudentCalendar = ({ userId, username }) => {
   };
 
   const goToDetailClass = (classId) => {
-    navigation.navigate('StudentDetailClass', { classId, date: selectedDate });
+    navigation.navigate('StudentDetailClass', { classId, date: selectedDate, userId: userId });
   };
   
   return (

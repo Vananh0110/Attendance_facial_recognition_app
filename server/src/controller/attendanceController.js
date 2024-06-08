@@ -34,12 +34,22 @@ const addQrAttendance = async (req, res) => {
     attendance_type,
     expiration_time,
   } = req.body;
-  const expirationDate = new Date(expiration_time);
-  const now = new Date();
-  if (now > expirationDate) {
+  const expirationTime = new Date(expiration_time).toTimeString().split(' ')[0];
+  const nowTime = new Date().toTimeString().split(' ')[0];
+
+  if (nowTime > expirationTime) {
     return res.status(400).json({ message: 'QR code has expired' });
   }
   try {
+    const existingAttendance = await pool.query(
+      'SELECT * FROM attendance WHERE student_class_id = $1 AND date_attended = $2',
+      [student_class_id, date_attended]
+    );
+
+    if (existingAttendance.rows.length > 0) {
+      return res.status(400).json({ message: 'Attendance already recorded' });
+    }
+
     const result = await pool.query(queries.addAttendanceQuery, [
       student_class_id,
       date_attended,

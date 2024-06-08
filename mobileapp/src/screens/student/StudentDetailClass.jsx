@@ -26,6 +26,7 @@ import moment from 'moment';
 const StudentDetailScreen = ({ route }) => {
   const { classId } = route.params;
   const { date } = route.params;
+  const { userId } = route.params;
   const navigation = useNavigation();
   const [classInfo, setClassInfo] = useState(null);
   const [students, setStudents] = useState([]);
@@ -33,8 +34,7 @@ const StudentDetailScreen = ({ route }) => {
   const [error, setError] = useState('');
   const [visible, setVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
+  const [studentClassId, setStudentClassId] = useState(null);
 
   useEffect(() => {
     fetchClassAndStudents();
@@ -49,6 +49,12 @@ const StudentDetailScreen = ({ route }) => {
       );
       setClassInfo(classResponse.data);
       setStudents(studentsResponse.data);
+      const student = studentsResponse.data.find(
+        (student) => student.user_id === userId
+      );
+      if (student) {
+        setStudentClassId(student.student_class_id);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -101,7 +107,11 @@ const StudentDetailScreen = ({ route }) => {
   };
 
   const navigateToQrScanner = () => {
-    navigation.navigate('StudentQrCodeScanner', { classId, date });
+    navigation.navigate('StudentQrCodeScanner', {
+      classId,
+      date,
+      studentClassId,
+    });
   };
 
   return (
