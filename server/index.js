@@ -12,6 +12,7 @@ const courseRoute = require('./src/route/courseRoute');
 const classRoute = require('./src/route/classRoute');
 const studentClassRoute = require('./src/route/studentClassRoute');
 const attendanceRoute = require('./src/route/attendanceRoute');
+const path = require('path');
 
 //middleware
 app.use(cors());
@@ -23,10 +24,11 @@ app.use('/course', courseRoute);
 app.use('/class', classRoute);
 app.use('/studentClass', studentClassRoute);
 app.use('/attendance', attendanceRoute);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/', (req, res) => {
-    res.send('Attendance using facial recognition system _ Pham Van Anh');
-})
+  res.send('Attendance using facial recognition system _ Pham Van Anh');
+});
 app.listen(PORT, () => {
-    console.log(`Server has started on port ${PORT}`)
-})
+  console.log(`Server has started on port ${PORT}`);
+});

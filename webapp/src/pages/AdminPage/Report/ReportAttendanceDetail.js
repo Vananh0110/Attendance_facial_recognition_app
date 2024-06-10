@@ -13,6 +13,8 @@ import * as XLSX from 'xlsx';
 
 const { Option } = Select;
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const ReportAttendanceDetail = () => {
   const { classId } = useParams();
   const [students, setStudents] = useState([]);
@@ -116,7 +118,7 @@ const ReportAttendanceDetail = () => {
             minute: '2-digit',
           }),
           status,
-          attendance_type: 'traditional'
+          attendance_type: 'traditional',
         });
         setAttendance((prev) => ({ ...prev, [key]: status }));
       } catch (error) {
@@ -174,11 +176,13 @@ const ReportAttendanceDetail = () => {
       width: 80,
       render: (text, record) => (
         <Avatar
-          src={record.avatar_url ? record.avatar_url : undefined}
+          src={
+            record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined
+          }
           alt="avatar"
           size={50}
           style={{ verticalAlign: 'middle' }}
-          icon={<UserOutlined />}
+          icon={!record.avatar_url && <UserOutlined />}
           onError={() => {
             return false;
           }}

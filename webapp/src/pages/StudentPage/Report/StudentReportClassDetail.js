@@ -9,6 +9,9 @@ import {
 } from '@ant-design/icons';
 import Layout from '../../../components/Student/Layout';
 import '../../../App.css';
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const StudentReportClassDetail = () => {
   const { classId } = useParams();
   const [students, setStudents] = useState([]);
@@ -74,11 +77,11 @@ const StudentReportClassDetail = () => {
       width: 60,
       render: (text, record) => (
         <Avatar
-          src={record.avatar_url ? record.avatar_url : undefined}
+          src={record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined}
           alt="avatar"
           size={50}
           style={{ verticalAlign: 'middle' }}
-          icon={<UserOutlined />}
+          icon={!record.avatar_url && <UserOutlined />}
           onError={() => false}
         />
       ),

@@ -20,7 +20,7 @@ import {
   Paragraph,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import axios from '../../api/axios';
+import axios from '../../../../api/axios';
 import { Dropdown } from 'react-native-element-dropdown';
 import moment from 'moment';
 

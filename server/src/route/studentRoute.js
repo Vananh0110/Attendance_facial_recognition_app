@@ -9,5 +9,6 @@ router.delete('/:studentId', controller.deleteStudent);
 router.put('/:studentId', controller.updateInfoStudent)
 router.post('/upload', controller.upload.single('file'), controller.addStudentsFromFile);
 router.post('/', controller.addStudent);
+router.get('/user/:userId', controller.getStudentByUserId);
 
 module.exports = router;

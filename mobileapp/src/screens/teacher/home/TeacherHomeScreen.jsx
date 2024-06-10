@@ -12,10 +12,10 @@ import {
 } from 'react-native-paper';
 import { Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import TeacherCalendar from '../../components/teacher/TeacherCalendar';
-import TeacherAttendance from '../../components/teacher/TeacherAttendance';
-import TeacherClass from '../../components/teacher/TeacherClass';
-import TeacherReport from '../../components/teacher/TeacherReport';
+import TeacherCalendar from '../../../components/teacher/TeacherCalendar';
+import TeacherAttendance from '../../../components/teacher/TeacherAttendance';
+import TeacherClass from '../../../components/teacher/TeacherClass';
+import TeacherReport from '../../../components/teacher/TeacherReport';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 

@@ -10,7 +10,7 @@ import {
 import { Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Camera, CameraType } from 'expo-camera/legacy';
-import axios from '../../api/axios';
+import axios from '../../../api/axios';
 
 const StudentQrCodeScanner = ({ route }) => {
   const { classId, date, studentClassId } = route.params;

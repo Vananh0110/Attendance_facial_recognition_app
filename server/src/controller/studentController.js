@@ -185,6 +185,23 @@ const addStudent = async (req, res) => {
   }
 };
 
+const getStudentByUserId = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const result = await pool.query(studentQueries.getStudentByUserIdQuery, [
+      userId,
+    ]);
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).send('Student not found');
+    }
+  } catch (error) {
+    console.error('Error retrieving student:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 module.exports = {
   getAllStudents,
   deleteStudent,
@@ -193,4 +210,5 @@ module.exports = {
   addStudentsFromFile,
   addStudent,
   upload,
+  getStudentByUserId,
 };

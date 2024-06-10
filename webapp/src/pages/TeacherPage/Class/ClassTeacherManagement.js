@@ -25,6 +25,8 @@ import {
 import EditClassModal from '../../../components/Teacher/Class/EditClassModal';
 import AddClassModal from '../../../components/Teacher/Class/AddClassModal';
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const ClassTeacherManagement = () => {
   const [classes, setClasses] = useState([]);
   const [viewMode, setViewMode] = useState('table');

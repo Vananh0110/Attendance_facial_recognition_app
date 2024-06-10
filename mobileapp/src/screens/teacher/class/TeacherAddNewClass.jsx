@@ -20,7 +20,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { TimePickerModal, registerTranslation } from 'react-native-paper-dates';
 import { vi } from 'date-fns/locale';
-import axios from '../../api/axios';
+import axios from '../../../api/axios';
 
 registerTranslation('vi', vi);
 

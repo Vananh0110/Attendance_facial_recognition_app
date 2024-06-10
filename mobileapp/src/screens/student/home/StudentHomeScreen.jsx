@@ -13,9 +13,9 @@ import {
 import { Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import StudentCalendar from '../../components/student/StudentCalendar';
-import StudentClass from '../../components/student/StudentClass';
-import StudentReport from '../../components/student/StudentReport';
+import StudentCalendar from '../../../components/student/StudentCalendar';
+import StudentClass from '../../../components/student/StudentClass';
+import StudentReport from '../../../components/student/StudentReport';
 import { useNavigation } from '@react-navigation/native';
 
 const StudentHomeScreen = () => {

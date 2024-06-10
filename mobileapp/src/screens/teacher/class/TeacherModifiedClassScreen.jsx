@@ -21,7 +21,7 @@ import {
   Searchbar,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import axios from '../../api/axios';
+import axios from '../../../api/axios';
 import moment from 'moment';
 
 const TeacherModifiedClassScreen = ({ route }) => {

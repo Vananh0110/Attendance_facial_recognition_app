@@ -16,6 +16,9 @@ import {
 } from 'antd';
 import { UserOutlined} from '@ant-design/icons';
 import moment from 'moment';
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const TeacherAttendanceClassDetail = () => {
   const { classId } = useParams();
   const [classInfo, setClassInfo] = useState(null);
@@ -94,11 +97,11 @@ const TeacherAttendanceClassDetail = () => {
       key: 'avatar',
       render: (text, record) => (
         <Avatar
-          src={record.avatar_url ? record.avatar_url : undefined}
+        src={record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined}
           alt="avatar"
           size={50}
           style={{ verticalAlign: 'middle' }}
-          icon={<UserOutlined />}
+          icon={!record.avatar_url && <UserOutlined />}
           onError={() => {
             return false;
           }}

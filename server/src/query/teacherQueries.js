@@ -12,8 +12,15 @@ const getTeacherQuery = `
     INNER JOIN teachers t ON u.user_id = t.user_id
     WHERE t.teacher_id = $1`;
 
+const getTeacherByUserIdQuery = `
+      SELECT t.teacher_id, u.username, u.email, u.phone, u.avatar_url
+      FROM users u
+      INNER JOIN teachers t ON u.user_id = t.user_id
+      WHERE t.user_id = $1`;
+
 module.exports = {
   getAllTeachersQuery,
   deleteTeacherQuery,
   getTeacherQuery,
+  getTeacherByUserIdQuery
 };

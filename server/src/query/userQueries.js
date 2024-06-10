@@ -14,6 +14,7 @@ const userInsertQuery = `
           VALUES ($1, $2, $3, $4, $5)
           RETURNING user_id
         `;
+const getUserQuery = 'SELECT * FROM users WHERE user_id = $1';
 
 module.exports = {
   registerQuery,
@@ -22,4 +23,5 @@ module.exports = {
   getUserByIdQuery,
   getUserByEmailQuery,
   userInsertQuery,
+  getUserQuery,
 };

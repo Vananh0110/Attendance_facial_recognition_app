@@ -20,6 +20,8 @@ import AddStudentToClassModal from '../../../components/Admin/StudentClass/AddSt
 
 const { Option } = Select;
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const ClassDetailPage = () => {
   const { classId } = useParams();
   const [classInfo, setClassInfo] = useState(null);
@@ -120,11 +122,13 @@ const ClassDetailPage = () => {
       key: 'avatar',
       render: (text, record) => (
         <Avatar
-          src={record.avatar_url ? record.avatar_url : undefined}
+          src={
+            record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined
+          }
+          icon={!record.avatar_url && <UserOutlined />}
           alt="avatar"
           size={50}
           style={{ verticalAlign: 'middle' }}
-          icon={<UserOutlined />}
           onError={() => {
             return false;
           }}

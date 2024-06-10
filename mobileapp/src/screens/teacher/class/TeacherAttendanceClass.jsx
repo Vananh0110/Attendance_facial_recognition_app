@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { List, Searchbar, ActivityIndicator, Appbar } from 'react-native-paper';
-import axios from '../../api/axios';
+import axios from '../../../api/axios';
 import moment from 'moment';
 import { useNavigation, useRoute } from '@react-navigation/native';
 

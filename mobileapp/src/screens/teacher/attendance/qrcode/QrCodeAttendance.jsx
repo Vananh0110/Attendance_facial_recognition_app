@@ -11,7 +11,7 @@ import {
 } from 'react-native-paper';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
-import axios from '../../api/axios';
+import axios from '../../../../api/axios';
 
 const QrCodeAttendance = ({ route }) => {
   const { classId, date } = route.params;
@@ -27,8 +27,15 @@ const QrCodeAttendance = ({ route }) => {
       return;
     }
     setError('');
-    const expirationTime = moment(date).add(parseInt(duration, 10), 'minutes').toISOString();
-    navigation.navigate('QrCodeDisplayScreen', { classId, date, duration, expirationTime });
+    const expirationTime = moment(date)
+      .add(parseInt(duration, 10), 'minutes')
+      .toISOString();
+    navigation.navigate('QrCodeDisplayScreen', {
+      classId,
+      date,
+      duration,
+      expirationTime,
+    });
   };
 
   const navigateToReport = () => {

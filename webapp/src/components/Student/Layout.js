@@ -28,6 +28,7 @@ const getRoleName = (roleId) => {
       return 'Unknown Role';
   }
 };
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const Layout = ({ children }) => {
   const [userData, setUserData] = useState(null);
@@ -71,7 +72,7 @@ const Layout = ({ children }) => {
         <div className="d-flex">
           <div className="d-flex align-items-center">
             <Avatar
-              src={userData?.avatar_url}
+              src={userData?.avatar_url ? `${BASE_URL}${userData.avatar_url}` : undefined}
               icon={!userData?.avatar_url && <UserOutlined />}
               style={{ marginRight: 8 }}
             />
@@ -91,7 +92,7 @@ const Layout = ({ children }) => {
             </a>
             <ul className="dropdown-menu dropdown-menu-end">
               <li>
-                <a className="dropdown-item" href="#">
+                <a className="dropdown-item" href="/student/profile">
                   Profile
                 </a>
               </li>

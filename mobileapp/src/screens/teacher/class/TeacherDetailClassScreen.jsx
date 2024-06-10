@@ -20,13 +20,12 @@ import {
   List,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import axios from '../../api/axios';
+import axios from '../../../api/axios';
 import moment from 'moment';
 
-const StudentDetailScreen = ({ route }) => {
+const TeacherDetailClassScreen = ({ route }) => {
   const { classId } = route.params;
   const { date } = route.params;
-  const { userId } = route.params;
   const navigation = useNavigation();
   const [classInfo, setClassInfo] = useState(null);
   const [students, setStudents] = useState([]);
@@ -34,7 +33,8 @@ const StudentDetailScreen = ({ route }) => {
   const [error, setError] = useState('');
   const [visible, setVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [studentClassId, setStudentClassId] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
 
   useEffect(() => {
     fetchClassAndStudents();
@@ -49,12 +49,6 @@ const StudentDetailScreen = ({ route }) => {
       );
       setClassInfo(classResponse.data);
       setStudents(studentsResponse.data);
-      const student = studentsResponse.data.find(
-        (student) => student.user_id === userId
-      );
-      if (student) {
-        setStudentClassId(student.student_class_id);
-      }
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -106,13 +100,49 @@ const StudentDetailScreen = ({ route }) => {
     return moment(timeString, 'HH:mm:ss').format('HH:mm');
   };
 
-  const navigateToQrScanner = () => {
-    navigation.navigate('StudentQrCodeScanner', {
-      classId,
-      date,
-      studentClassId,
-    });
+  const openMenu = () => setMenuVisible(true);
+
+  const closeMenu = () => setMenuVisible(false);
+
+  const handleEdit = () => {
+    navigation.navigate('TeacherModifiedClassScreen', { classId });
+    closeMenu();
   };
+
+  const openAttendanceModal = () => setAttendanceModalVisible(true);
+  const closeAttendanceModal = () => setAttendanceModalVisible(false);
+
+  const handleAttendance = () => {
+    openAttendanceModal();
+    closeMenu();
+  };
+
+  const handleAttendanceOption = (type) => {
+    let screenName;
+    switch (type) {
+      case 'Traditional':
+        screenName = 'TraditionalAttendance';
+        break;
+      case 'QR Code':
+        screenName = 'QrCodeAttendance';
+        break;
+      case 'Face Recognition':
+        screenName = 'FaceRecognitionAttendance';
+        break;
+      default:
+        console.log('Unknown attendance type');
+        return;
+    }
+
+    navigation.navigate(screenName, {
+      classId: classId,
+      date: date,
+    });
+
+    closeAttendanceMenu();
+  };
+
+  const closeAttendanceMenu = () => setAttendanceModalVisible(false);
 
   return (
     <>
@@ -130,11 +160,31 @@ const StudentDetailScreen = ({ route }) => {
               fontWeight: 'bold',
             }}
           />
-          <Appbar.Action
-            icon="qrcode-scan"
-            color="#ffffff"
-            onPress={navigateToQrScanner}
-          />
+
+          <Menu
+            visible={menuVisible}
+            onDismiss={closeMenu}
+            anchor={
+              <Appbar.Action
+                icon="dots-vertical"
+                color="white"
+                onPress={openMenu}
+              />
+            }
+          >
+            <Menu.Item
+              onPress={handleAttendance}
+              title="Attendance"
+              leadingIcon="account-multiple-check"
+              titleStyle={{ fontSize: 14 }}
+            />
+            <Menu.Item
+              onPress={handleEdit}
+              title="Edit"
+              leadingIcon="pencil"
+              titleStyle={{ fontSize: 14 }}
+            />
+          </Menu>
         </Appbar.Header>
 
         <ScrollView style={styles.scrollContainer}>
@@ -209,6 +259,41 @@ const StudentDetailScreen = ({ route }) => {
           </View>
 
           <Portal>
+            <Modal
+              visible={attendanceModalVisible}
+              onDismiss={closeAttendanceModal}
+              contentContainerStyle={styles.modalContentContainer}
+            >
+              <View
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={styles.modalTitle}>Select Attendance Type</Text>
+              </View>
+              <List.Item
+                title="Traditional Attendance"
+                onPress={() => handleAttendanceOption('Traditional')}
+                titleStyle={styles.textAttendance}
+                left={(props) => <List.Icon {...props} icon="clipboard-text" />}
+              />
+              <List.Item
+                title="QR Code Attendance"
+                onPress={() => handleAttendanceOption('QR Code')}
+                titleStyle={styles.textAttendance}
+                left={(props) => <List.Icon {...props} icon="qrcode" />}
+              />
+              <List.Item
+                title="Face Recognition Attendance"
+                onPress={() => handleAttendanceOption('Face Recognition')}
+                titleStyle={styles.textAttendance}
+                left={(props) => (
+                  <List.Icon {...props} icon="face-recognition" />
+                )}
+              />
+            </Modal>
             <Modal
               visible={visible}
               onDismiss={hideModal}
@@ -333,4 +418,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StudentDetailScreen;
+export default TeacherDetailClassScreen;

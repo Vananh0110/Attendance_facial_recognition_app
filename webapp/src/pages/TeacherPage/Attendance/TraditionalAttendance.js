@@ -8,6 +8,8 @@ import '../../../App.css';
 
 const { Option } = Select;
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const TraditionalAttendance = () => {
   const { classId } = useParams();
   const [students, setStudents] = useState([]);
@@ -151,11 +153,11 @@ const TraditionalAttendance = () => {
       width: 60,
       render: (text, record) => (
         <Avatar
-          src={record.avatar_url ? record.avatar_url : undefined}
+          src={record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined}
           alt="avatar"
           size={50}
           style={{ verticalAlign: 'middle' }}
-          icon={<UserOutlined />}
+          icon={!record.avatar_url && <UserOutlined />}
           onError={() => {
             return false;
           }}
