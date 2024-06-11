@@ -18,6 +18,7 @@ import TeacherClass from '../../../components/teacher/TeacherClass';
 import TeacherReport from '../../../components/teacher/TeacherReport';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from '@env';
 
 const TeacherHomeScreen = () => {
   const [index, setIndex] = useState(0);
@@ -105,7 +106,7 @@ const TeacherHomeScreen = () => {
                 <Appbar.Action
                   icon={() =>
                     avatarUrl ? (
-                      <Avatar.Image size={30} source={{ uri: avatarUrl }} />
+                      <Avatar.Image size={30} source={{ uri: `${API_BASE_URL}${avatarUrl}` }} />
                     ) : (
                       <Avatar.Text
                         size={30}

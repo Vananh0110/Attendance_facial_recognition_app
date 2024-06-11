@@ -30,7 +30,6 @@ const LoginScreen = (props) => {
         email: email,
         password: password,
       });
-
       saveData(response.data.user);
 
       const role_id = response.data.user.role_id;

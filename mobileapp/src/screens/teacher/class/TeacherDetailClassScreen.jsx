@@ -22,6 +22,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import axios from '../../../api/axios';
 import moment from 'moment';
+import { API_BASE_URL } from '@env';
 
 const TeacherDetailClassScreen = ({ route }) => {
   const { classId } = route.params;
@@ -304,7 +305,7 @@ const TeacherDetailClassScreen = ({ route }) => {
                   {selectedStudent?.avatar_url ? (
                     <Avatar.Image
                       size={100}
-                      source={{ uri: selectedStudent.avatar_url }}
+                      source={{ uri: `${API_BASE_URL}${selectedStudent.avatar_url}` }}
                     />
                   ) : (
                     <Avatar.Text

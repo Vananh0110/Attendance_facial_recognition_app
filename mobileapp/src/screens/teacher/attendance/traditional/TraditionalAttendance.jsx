@@ -23,6 +23,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from '../../../../api/axios';
 import { Dropdown } from 'react-native-element-dropdown';
 import moment from 'moment';
+import { API_BASE_URL } from '@env';
 
 const TraditionalAttendance = ({ route }) => {
   const { classId, date } = route.params;
@@ -309,7 +310,7 @@ const TraditionalAttendance = ({ route }) => {
                   {selectedStudent?.avatar_url ? (
                     <Avatar.Image
                       size={100}
-                      source={{ uri: selectedStudent.avatar_url }}
+                      source={{ uri: `${API_BASE_URL}${selectedStudent.avatar_url}` }}
                     />
                   ) : (
                     <Avatar.Text

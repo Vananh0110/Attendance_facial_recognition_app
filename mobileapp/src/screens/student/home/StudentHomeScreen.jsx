@@ -17,6 +17,7 @@ import StudentCalendar from '../../../components/student/StudentCalendar';
 import StudentClass from '../../../components/student/StudentClass';
 import StudentReport from '../../../components/student/StudentReport';
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from '@env';
 
 const StudentHomeScreen = () => {
   const [index, setIndex] = useState(0);
@@ -101,7 +102,7 @@ const StudentHomeScreen = () => {
                 <Appbar.Action
                   icon={() =>
                     avatarUrl ? (
-                      <Avatar.Image size={30} source={{ uri: avatarUrl }} />
+                      <Avatar.Image size={30} source={{ uri: `${API_BASE_URL}${avatarUrl}` }} />
                     ) : (
                       <Avatar.Text
                         size={30}
