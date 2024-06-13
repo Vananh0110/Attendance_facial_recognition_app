@@ -29,10 +29,22 @@ const getAttendanceByClassAndDateQuery = `
         JOIN users u ON s.user_id = u.user_id
         WHERE sc.class_id = $1 AND a.date_attended = $2
 `;
+
+const getAttendanceByUserIdQuery = `
+        SELECT a.attendance_id, a.student_class_id, a.status, a.time_attended, a.date_attended, u.user_id, sc.class_id, c.class_code, cr.course_code, cr.course_name
+        FROM attendance a
+        JOIN student_class sc ON sc.student_class_id = a.student_class_id
+        JOIN students s ON sc.student_id = s.student_id
+        JOIN classes c ON sc.class_id = c.class_id
+        JOIN users u ON s.user_id = u.user_id
+        JOIN courses cr ON cr.course_id = c.course_id
+        WHERE u.user_id = $1
+`;
 module.exports = {
   addAttendanceQuery,
   getAttendanceByClassQuery,
   updateAttendanceQuery,
   deleteAttendanceQuery,
-  getAttendanceByClassAndDateQuery
+  getAttendanceByClassAndDateQuery,
+  getAttendanceByUserIdQuery,
 };

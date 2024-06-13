@@ -122,6 +122,20 @@ const deleteAttendance = async (req, res) => {
   }
 };
 
+const getAttendanceByUserId = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const results = await pool.query(queries.getAttendanceByUserIdQuery, [
+      userId,
+    ]);
+    res.status(200).json(results.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 module.exports = {
   addAttendance,
   getAttendanceByClass,
@@ -129,4 +143,5 @@ module.exports = {
   deleteAttendance,
   getAttendanceByClassAndDate,
   addQrAttendance,
+  getAttendanceByUserId
 };

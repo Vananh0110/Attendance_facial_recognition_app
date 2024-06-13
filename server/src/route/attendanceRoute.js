@@ -9,5 +9,6 @@ router.delete('/:attendanceId', controller.deleteAttendance);
 router.get('/class/:classId', controller.getAttendanceByClass);
 router.get('/class/:classId/:dateAttended', controller.getAttendanceByClassAndDate);
 router.post('/qr', controller.addQrAttendance);
+router.get('/getStudentAttendance/:userId', controller.getAttendanceByUserId);
 
 module.exports = router;

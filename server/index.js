@@ -4,6 +4,7 @@ const app = express();
 const pool = require('./db');
 const cors = require('cors');
 const PORT = process.env.PORT || 5000;
+require('dotenv').config();
 
 const userRoute = require('./src/route/userRoute');
 const teacherRoute = require('./src/route/teacherRoute');
@@ -12,6 +13,8 @@ const courseRoute = require('./src/route/courseRoute');
 const classRoute = require('./src/route/classRoute');
 const studentClassRoute = require('./src/route/studentClassRoute');
 const attendanceRoute = require('./src/route/attendanceRoute');
+const studentFaceRoute = require('./src/route/studentFaceRoute');
+
 const path = require('path');
 
 //middleware
@@ -24,6 +27,8 @@ app.use('/course', courseRoute);
 app.use('/class', classRoute);
 app.use('/studentClass', studentClassRoute);
 app.use('/attendance', attendanceRoute);
+app.use('/face', studentFaceRoute);
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/', (req, res) => {

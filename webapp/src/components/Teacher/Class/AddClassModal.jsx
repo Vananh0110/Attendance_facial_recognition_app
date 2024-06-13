@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Modal,
+  Button,
+  DatePicker,
+  TimePicker,
   Form,
   Input,
-  DatePicker,
-  Button,
+  Modal,
   Select,
-  TimePicker,
+  message,
   Row,
   Col,
-  message,
 } from 'antd';
-import moment from 'moment';
-import axios from '../../../api/axios';
 import { EditOutlined } from '@ant-design/icons';
+import axios from '../../../api/axios';
 import AddCourseModal from '../../Admin/Course/AddCourseModal';
+
 const { Option } = Select;
 
-const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
+const AddClassModal = ({ visible, onClose, onCreate }) => {
   const [form] = Form.useForm();
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
@@ -42,7 +42,6 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
   const fetchTeachers = async () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userId = user.user_id;
-    console.log(userId);
     try {
       const response = await axios.get('/teacher/all');
       const filteredTeacher = response.data.filter(
@@ -66,37 +65,38 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
       });
   };
 
-  const handleCreateNewTeacher = (values) => {
-    axios
-      .post('/teacher', values)
-      .then(() => {
-        message.success('Teacher added successfully');
-        fetchTeachers();
-      })
-      .catch((error) => {
-        message.error('Failed to add teacher');
-      });
-  };
+  const handleSubmit = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        if (values.date_start) {
+          values.date_start = values.date_start.format('YYYY-MM-DD');
+        }
 
-  const handleSubmit = async () => {
-    try {
-      const values = await form.validateFields();
-      onUpdate(classData.class_id, {
-        ...values,
-        date_start: values.date_start.format('YYYY-MM-DD'),
-        date_finish: values.date_finish.format('YYYY-MM-DD'),
-        time_start: values.time_start.format('HH:mm'),
-        time_finish: values.time_finish.format('HH:mm'),
+        if (values.date_finish) {
+          values.date_finish = values.date_finish.format('YYYY-MM-DD');
+        }
+
+        if (values.time_start) {
+          values.time_start = values.time_start.format('HH:mm');
+        }
+
+        if (values.time_finish) {
+          values.time_finish = values.time_finish.format('HH:mm');
+        }
+
+        onCreate(values);
+        form.resetFields();
+        onClose();
+      })
+      .catch((info) => {
+        console.log('Validate Failed: ', info);
       });
-      onClose();
-    } catch (error) {
-      console.log('Validation Failed:', error);
-    }
   };
 
   return (
     <Modal
-      title="Edit Class"
+      title="Add New Class"
       visible={visible}
       onOk={handleSubmit}
       onCancel={onClose}
@@ -109,26 +109,13 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
         </Button>,
       ]}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={{
-          class_code: classData.class_code,
-          course_id: classData.course_id,
-          date_start: moment(classData.date_start),
-          date_finish: moment(classData.date_finish),
-          day_of_week: classData.day_of_week,
-          time_start: moment(classData.time_start, 'HH:mm'),
-          time_finish: moment(classData.time_finish, 'HH:mm'),
-          teacher_id: classData.teacher_id,
-        }}
-      >
+      <Form form={form} layout="vertical">
         <Form.Item
           name="class_code"
           label="Class Code"
           rules={[{ required: true, message: 'Please input the class code!' }]}
         >
-          <Input />
+          <Input placeholder="Input the class code" />
         </Form.Item>
         <Form.Item
           name="course_id"
@@ -171,23 +158,23 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
           <Col span={12}>
             <Form.Item
               name="date_start"
-              label="Start Date"
+              label="Date Start"
               rules={[
                 { required: true, message: 'Please select the start date!' },
               ]}
             >
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="date_finish"
-              label="End Date"
+              label="Date Finish"
               rules={[
                 { required: true, message: 'Please select the end date!' },
               ]}
             >
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker />
             </Form.Item>
           </Col>
         </Row>
@@ -195,23 +182,23 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
           <Col span={12}>
             <Form.Item
               name="time_start"
-              label="Start Time"
+              label="Time Start"
               rules={[
                 { required: true, message: 'Please select the start time!' },
               ]}
             >
-              <TimePicker format="HH:mm" />
+              <TimePicker />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="time_finish"
-              label="Finish Time"
+              label="Time Finish"
               rules={[
                 { required: true, message: 'Please select the finish time!' },
               ]}
             >
-              <TimePicker format="HH:mm" />
+              <TimePicker />
             </Form.Item>
           </Col>
         </Row>
@@ -246,4 +233,4 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
   );
 };
 
-export default EditClassModal;
+export default AddClassModal;

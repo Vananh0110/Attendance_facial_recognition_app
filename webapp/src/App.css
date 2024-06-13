@@ -379,3 +379,8 @@ li {
   flex-grow: 1;
 }
 
+.dashboard {
+  background-color: #7fd6ff;
+  border-radius: 20px;
+}
+

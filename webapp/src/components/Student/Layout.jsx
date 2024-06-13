@@ -5,12 +5,10 @@ import {
   ChevronDown,
   AlignJustify,
   LayoutDashboard,
-  UserCheck,
-  Users,
   Building,
-  NotepadText,
   CalendarCheck,
   ClipboardList,
+  Images
 } from 'lucide-react';
 import '../../App.css';
 import { UserOutlined } from '@ant-design/icons';
@@ -157,6 +155,24 @@ const Layout = ({ children }) => {
                 id="classes-tooltip"
                 place="right"
                 content="Classes"
+              />
+            </li>
+            <li className="sidebar-item">
+              <NavLink
+                to="/student/pictures"
+                activeClassName="active"
+                className="sidebar-link"
+              >
+                <Images
+                  className="icon"
+                  data-tooltip-id="picture-tooltip"
+                />
+                <span>Pictures</span>
+              </NavLink>
+              <ReactTooltip
+                id="picture-tooltip"
+                place="right"
+                content="Pictures"
               />
             </li>
             <li className="sidebar-item">

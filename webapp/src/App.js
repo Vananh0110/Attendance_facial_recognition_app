@@ -34,6 +34,7 @@ import StudentClassDetail from './pages/StudentPage/Class/StudentClassDetail';
 import StudentReportClassDetail from './pages/StudentPage/Report/StudentReportClassDetail';
 import StudentProfile from './pages/StudentPage/Profile/StudentProfile';
 import AdminProfile from './pages/AdminPage/Profile/AdminProfile';
+import StudentPicture from './pages/StudentPage/Pictures/StudentPicture';
 
 function App() {
   return (
@@ -298,6 +299,15 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['student']}>
               <StudentProfile />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/student/pictures"
+          element={
+            <PrivateRoute allowedRoles={['student']}>
+              <StudentPicture />
             </PrivateRoute>
           }
         />
