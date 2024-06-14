@@ -1,7 +1,10 @@
 Flask
+SQLAlchemy
 psycopg2-binary
 flask_sqlalchemy
+flask_marshmallow
+marshmallow-sqlalchemy
 flask_cors
-opencv
-numpy
 dlib
+opencv-python
+opencv
