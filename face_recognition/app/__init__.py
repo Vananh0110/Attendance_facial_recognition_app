@@ -13,8 +13,8 @@ def create_app():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:250802@localhost/attendance_facial_recognition_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'uploads')
-    app.config['DATASET_FOLDER'] = os.path.join(app.root_path, 'dataset')
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, '..', 'uploads')
+    app.config['DATASET_FOLDER'] = os.path.join(app.root_path, '..', 'dataset')
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
     db.init_app(app)

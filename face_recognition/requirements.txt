@@ -6,5 +6,9 @@ flask_marshmallow
 marshmallow-sqlalchemy
 flask_cors
 dlib
-opencv-python
-opencv
+keras
+tensorflow
+scikit-learn
+Pillow
+torch
+facenet_pytorch
