@@ -7,11 +7,9 @@ from facenet_pytorch import InceptionResnetV1
 import torch
 
 SHAPE_PREDICTOR_PATH = os.path.join('models', 'shape_predictor_68_face_landmarks.dat')
-FACE_RECOGNITION_MODEL_PATH = os.path.join('models', 'dlib_face_recognition_resnet_model_v1.dat')
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(SHAPE_PREDICTOR_PATH)
-face_rec_model = dlib.face_recognition_model_v1(FACE_RECOGNITION_MODEL_PATH)
 model = InceptionResnetV1(pretrained='vggface2').eval()
 
 def allowed_file(filename):
@@ -21,10 +19,9 @@ def allowed_file(filename):
 def save_uploaded_file(file, student_id):
     upload_path = os.path.join(current_app.config['UPLOAD_FOLDER'], str(student_id))
     os.makedirs(upload_path, exist_ok=True)
-    filename = f"{student_id}_{file.filename}"
+    filename = f"{file.filename}"
     file_path = os.path.join(upload_path, filename)
     file.save(file_path)
-    # Lưu URL của ảnh gốc dưới dạng đường dẫn tương đối
     relative_url = os.path.join('/uploads', str(student_id), filename).replace("\\", "/")
     return file_path, relative_url
 
@@ -44,7 +41,7 @@ def process_and_save_image(file_path, student_id):
 
     dataset_path = os.path.join(current_app.config['DATASET_FOLDER'], str(student_id))
     os.makedirs(dataset_path, exist_ok=True)
-    processed_filename = f'processed_{os.path.basename(file_path)}'
+    processed_filename = f"processed_{os.path.basename(file_path)}"
     processed_file_path = os.path.join(dataset_path, processed_filename)
     aligned_face_img = Image.fromarray(aligned_face.squeeze().permute(1, 2, 0).numpy().astype(np.uint8))
     aligned_face_img.save(processed_file_path)

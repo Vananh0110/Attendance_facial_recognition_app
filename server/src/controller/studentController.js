@@ -91,7 +91,7 @@ const addStudentsFromFile = async (req, res) => {
   const filePath = req.file.path;
   const fileExtension = path.extname(req.file.originalname).toLowerCase();
   const results = [];
-  const defaultPassword = 'student123';
+  const defaultPassword = 'student';
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
   const roleStudentId = 3;
@@ -152,7 +152,7 @@ const addStudentsFromFile = async (req, res) => {
 const addStudent = async (req, res) => {
   const { username, phone, email, student_code, student_class, gender } =
     req.body;
-  const defaultPassword = 'student123';
+  const defaultPassword = 'student';
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
   const roleStudentId = 3;

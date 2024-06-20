@@ -49,7 +49,8 @@ CREATE TABLE admins (
 CREATE TABLE courses (
     course_id INT GENERATED ALWAYS AS IDENTITY,
     course_code VARCHAR(255) UNIQUE NOT NULL,
-    course_name VARCHAR(255) NOT NULL
+    course_name VARCHAR(255) NOT NULL,
+	PRIMARY KEY(course_id)
 );
 
 CREATE TABLE classes (
@@ -102,5 +103,9 @@ VALUES
     ('admin'),
     ('teacher'),
     ('student');
+
+INSERT INTO users(username, email, password, role_id)
+VALUES
+('admin', 'admin@gmail.com', '$2b$10$icBC0ab1hV9Yf6WG9c32OORntvKKMhZIZ5v0m5BqBf5aEIAsJZonG', 1)
 
 

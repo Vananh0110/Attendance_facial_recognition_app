@@ -6,9 +6,8 @@ flask_marshmallow
 marshmallow-sqlalchemy
 flask_cors
 dlib
-keras
-tensorflow
 scikit-learn
 Pillow
 torch
 facenet_pytorch
+joblib

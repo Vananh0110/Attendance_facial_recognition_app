@@ -3,8 +3,6 @@ from . import db
 from .models import StudentFace, Student
 from .utils import save_uploaded_file, process_and_save_image, extract_features, allowed_file
 import os
-import shutil
-import numpy as np  # Import thêm numpy
 
 def init_routes(app):
     @app.route('/')
@@ -43,24 +41,27 @@ def init_routes(app):
         pictures = [{'id': face.face_id, 'url': face.face_url, 'name': face.face_url.split('/')[-1]} for face in faces]
         return jsonify(pictures)
 
-
-
     @app.route('/delete/<int:face_id>', methods=['DELETE'])
     def delete_face(face_id):
         try:
             face = StudentFace.query.filter_by(face_id=face_id).first()
             if face:
                 student_id = face.student_id
+                face_url = face.face_url
                 db.session.delete(face)
                 db.session.commit()
 
-                upload_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], str(student_id))
-                dataset_folder = os.path.join(current_app.config['DATASET_FOLDER'], str(student_id))
+                # Xóa file trong thư mục upload
+                upload_file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], face_url.split('/')[2], face_url.split('/')[3])
+                if os.path.exists(upload_file_path):
+                    os.remove(upload_file_path)
 
-                if os.path.exists(upload_folder):
-                    shutil.rmtree(upload_folder)
-                if os.path.exists(dataset_folder):
-                    shutil.rmtree(dataset_folder)
+                # Xóa file trong thư mục dataset
+                dataset_file_name = "processed_" + os.path.basename(face_url)
+                dataset_file_path = os.path.join(current_app.config['DATASET_FOLDER'], str(student_id),
+                                                 dataset_file_name)
+                if os.path.exists(dataset_file_path):
+                    os.remove(dataset_file_path)
 
                 return jsonify({'success': f'Face {face_id} and associated files deleted successfully'}), 200
             else:
