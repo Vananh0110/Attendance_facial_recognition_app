@@ -18,13 +18,13 @@
 #     return embedding.squeeze().numpy()
 #
 # # Tải mô hình và encoder
-# with open('svm_model.pkl', 'rb') as f:
+# with open('models/svm_model.pkl', 'rb') as f:
 #     svm_model = pickle.load(f)
-# with open('svm_encoder.pkl', 'rb') as f:
+# with open('models/svm_encoder.pkl', 'rb') as f:
 #     encoder = pickle.load(f)
 #
 # # Đọc và xử lý ảnh mới
-# img_path = 'image/7/7_16.jpg'
+# img_path = 'image/2/2_11.jpg'
 # img = io.imread(img_path)
 # dets = detector(img, 1)
 # if len(dets) > 0:
@@ -60,9 +60,9 @@ def get_embedding(face_img):
     return embedding.squeeze().numpy()
 
 # Tải mô hình và encoder
-with open('svm_model.pkl', 'rb') as f:
+with open('models/svm_model.pkl', 'rb') as f:
     svm_model = pickle.load(f)
-with open('svm_encoder.pkl', 'rb') as f:
+with open('models/svm_encoder.pkl', 'rb') as f:
     encoder = pickle.load(f)
 
 # Đọc và xử lý ảnh mới

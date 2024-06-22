@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 # Tải dữ liệu huấn luyện
-train_data = np.load('train_embeddings.npz')
+train_data = np.load('embeddings/embeddings.npz')
 X, Y = train_data['arr_0'], train_data['arr_1']
 
 # Mã hóa nhãn
@@ -28,7 +28,7 @@ print("Training Accuracy:", accuracy_score(Y_train, ypreds_train))
 print("Testing Accuracy:", accuracy_score(Y_test, ypreds_test))
 
 # Lưu mô hình và encoder
-with open('svm_model.pkl', 'wb') as f:
+with open('models/svm_model.pkl', 'wb') as f:
     pickle.dump(model, f)
-with open('svm_encoder.pkl', 'wb') as f:
+with open('models/svm_encoder.pkl', 'wb') as f:
     pickle.dump(encoder, f)

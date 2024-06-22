@@ -48,4 +48,4 @@ class FACELOADING:
 if __name__ == "__main__":
     faceloading = FACELOADING("uploads")
     X, Y = faceloading.load_classes()
-    np.savez_compressed('train_data.npz', data=X, labels=Y)
+    np.savez_compressed('preprocess/data.npz', data=X, labels=Y)

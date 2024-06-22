@@ -16,10 +16,9 @@ def get_embedding(face_img):
 
 
 if __name__ == "__main__":
-    train_data = np.load('train_data.npz')
+    train_data = np.load('preprocess/data.npz')
     X_train, y_train = train_data['data'], train_data['labels']
-
     EMBEDDED_X = [get_embedding(img) for img in X_train]
     EMBEDDED_X = np.asarray(EMBEDDED_X)
 
-    np.savez_compressed('train_embeddings.npz', EMBEDDED_X, y_train)
+    np.savez_compressed('embeddings/embeddings.npz', EMBEDDED_X, y_train)
