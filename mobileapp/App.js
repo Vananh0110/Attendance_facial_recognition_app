@@ -29,7 +29,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName="TeacherHomeScreen"
         screenOptions={{
           statusBarColor: '#00B0FF',
           headerStyle: {
