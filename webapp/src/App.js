@@ -35,7 +35,7 @@ import StudentReportClassDetail from './pages/StudentPage/Report/StudentReportCl
 import StudentProfile from './pages/StudentPage/Profile/StudentProfile';
 import AdminProfile from './pages/AdminPage/Profile/AdminProfile';
 import StudentPicture from './pages/StudentPage/Pictures/StudentPicture';
-
+import FaceRecognitionAttendance from './pages/TeacherPage/Attendance/FaceRecognitionAttendance';
 function App() {
   return (
     <BrowserRouter>
@@ -213,6 +213,15 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['teacher']}>
               <QrCodeAttendance />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/attendance/classDetail/:classId/:date/facerecognition"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <FaceRecognitionAttendance />
             </PrivateRoute>
           }
         />

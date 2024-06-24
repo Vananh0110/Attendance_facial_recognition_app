@@ -14,10 +14,12 @@ import {
   Button,
   Select,
 } from 'antd';
-import { UserOutlined} from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+const { Option } = Select;
 
 const TeacherAttendanceClassDetail = () => {
   const { classId } = useParams();
@@ -25,11 +27,15 @@ const TeacherAttendanceClassDetail = () => {
   const [students, setStudents] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [isAttendanceModalVisible, setAttendanceModalVisible] = useState(false);
-
+  const [isScheduleModalVisible, setScheduleModalVisible] = useState(false);
+  const [schedule, setSchedule] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
+  
   const navigate = useNavigate();
   useEffect(() => {
     fetchClassInfo();
     fetchStudents();
+    fetchSchedule();
   }, [classId]);
   const fetchClassInfo = async () => {
     try {
@@ -51,12 +57,40 @@ const TeacherAttendanceClassDetail = () => {
     }
   };
 
+  const fetchSchedule = async () => {
+    try {
+      const scheduleData = await axios.get(
+        `/class/${classId}/schedule`
+      );
+      setSchedule(scheduleData.data);
+    } catch (error) {
+      console.error('Fail to fetch schedule', error);
+    }
+  };
+
   const showAttendanceModal = () => {
     setAttendanceModalVisible(true);
   };
 
   const formatDate = (date) => {
     return moment(date).format('DD/MM/YYYY');
+  };
+
+  const handleDateChange = (value) => {
+    setSelectedDate(value);
+  };
+
+  const handleFaceRecognitionClick = () => {
+    setAttendanceModalVisible(false);
+    setScheduleModalVisible(true);
+  };
+
+  const handleNavigateToFaceRecognition = () => {
+    if (selectedDate) {
+      navigate(`/teacher/attendance/classDetail/${classId}/${selectedDate}/facerecognition`);
+    } else {
+      message.error('Please select a date');
+    }
   };
 
   const dayOfWeekAsText = (day) => {
@@ -97,7 +131,9 @@ const TeacherAttendanceClassDetail = () => {
       key: 'avatar',
       render: (text, record) => (
         <Avatar
-        src={record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined}
+          src={
+            record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined
+          }
           alt="avatar"
           size={50}
           style={{ verticalAlign: 'middle' }}
@@ -235,9 +271,39 @@ const TeacherAttendanceClassDetail = () => {
         >
           Traditional Attendance
         </Button>
-        <Button block onClick={() => navigate(`/teacher/attendance/classDetail/${classId}/qrcode`)}>
+        <Button
+          block
+          style={{ marginBottom: '10px' }}
+          onClick={() =>
+            navigate(`/teacher/attendance/classDetail/${classId}/qrcode`)
+          }
+        >
           QR Code Attendance
         </Button>
+        <Button
+          block
+          onClick={handleFaceRecognitionClick}
+        >
+          Face Recognition Attendance
+        </Button>
+      </Modal>
+      <Modal
+        title="Select Date for Face Recognition Attendance"
+        visible={isScheduleModalVisible}
+        onCancel={() => setScheduleModalVisible(false)}
+        onOk={handleNavigateToFaceRecognition}
+      >
+        <Select
+          placeholder="Select date"
+          onChange={handleDateChange}
+          style={{ width: '100%' }}
+        >
+          {schedule.map((item) => (
+            <Option key={item.date} value={item.date}>
+              {item.date}
+            </Option>
+          ))}
+        </Select>
       </Modal>
     </Layout>
   );

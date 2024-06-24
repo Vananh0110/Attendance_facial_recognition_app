@@ -75,7 +75,7 @@ const TeacherReportClassDetail = () => {
   };
 
   const goToAttendance = () => {
-    navigate(`/teacher/attendance/classDetail/${classId}/traditional`);
+    navigate(`/teacher/attendance/classDetail/${classId}`);
   };
 
   const attendanceColors = {

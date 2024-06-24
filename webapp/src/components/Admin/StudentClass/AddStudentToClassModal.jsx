@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, Select, message } from 'antd';
-import axios from '../../../api/axios';
+import axios from 'axios';
 const { Option } = Select;
 
 const AddStudentToClassModal = ({ visible, onClose, classId }) => {
@@ -15,7 +15,7 @@ const AddStudentToClassModal = ({ visible, onClose, classId }) => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('/student/all');
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/student/all`);
       console.log(response.data);
       setStudents(response.data);
     } catch (error) {
@@ -26,17 +26,28 @@ const AddStudentToClassModal = ({ visible, onClose, classId }) => {
   const handleAddStudents = async () => {
     try {
       const promises = selectedStudents.map((studentId) =>
-        axios.post('/studentClass', {
+        axios.post(`${process.env.REACT_APP_BASE_URL}/studentClass`, {
           student_id: studentId,
           class_id: classId,
         })
       );
       await Promise.all(promises);
       message.success('All selected students have been added successfully');
+     
       onClose();
+      trainModel();
     } catch (error) {
       message.error('Failed to add students');
       console.error('Error adding students:', error);
+    }
+  };
+
+  const trainModel = async () => {
+    try {
+      await axios.post(`${process.env.REACT_APP_FLASK_BASE_URL}/train_model`);
+      console.success('Model trained successfully');
+    } catch (error) {
+      console.error('Error training model:', error);
     }
   };
 
