@@ -5,6 +5,7 @@ from PIL import Image
 from flask import current_app
 from facenet_pytorch import InceptionResnetV1
 import torch
+from skimage import io, transform
 
 detector = dlib.get_frontal_face_detector()
 model = InceptionResnetV1(pretrained='vggface2').eval()
@@ -42,3 +43,36 @@ def extract_features(image_tensor):
     with torch.no_grad():
         embedding = model(image_tensor).numpy().flatten()
     return embedding
+
+def save_uploaded_attendance_image(file, class_id, date):
+    upload_path = os.path.join(current_app.config['UPLOAD_ATTENDANCE_FOLDER'], str(class_id), str(date))
+    os.makedirs(upload_path, exist_ok=True)
+    filename = f"{file.filename}"
+    file_path = os.path.join(upload_path, filename)
+    file.save(file_path)
+    relative_url = os.path.join('/upload_attendance', str(class_id), str(date), filename).replace("\\", "/")
+    return file_path, relative_url
+
+
+def get_embeddings(img_path):
+    img = io.imread(img_path)
+    detector = dlib.get_frontal_face_detector()
+    dets = detector(img, 1)
+    if len(dets) == 0:
+        print(f"No face detected in image: {img_path}")
+        return []  # Không phát hiện khuôn mặt
+
+    embeddings = []
+    for i, d in enumerate(dets):
+        left, top, right, bottom = (d.left(), d.top(), d.right(), d.bottom())
+        face = img[top:bottom, left:right]
+        face_resized = transform.resize(face, (160, 160))
+        face_resized = face_resized.astype('float32')
+        face_resized = np.transpose(face_resized, (2, 0, 1))  # Chuyển đổi từ HWC sang CHW
+        face_resized = torch.tensor(face_resized).unsqueeze(0)  # Thêm batch dimension
+        with torch.no_grad():
+            embedding = model(face_resized)
+        embeddings.append(embedding.squeeze().numpy())
+
+    return embeddings
+

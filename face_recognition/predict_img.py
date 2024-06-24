@@ -66,7 +66,7 @@ with open('models/svm_encoder.pkl', 'rb') as f:
     encoder = pickle.load(f)
 
 # Đọc và xử lý ảnh mới
-img_path = 'image/test2.jpg'
+img_path = 'testattendance2.jpeg'
 img = io.imread(img_path)
 dets = detector(img, 1)
 

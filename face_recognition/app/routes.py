@@ -1,9 +1,12 @@
 from flask import request, jsonify, current_app, send_from_directory
 from . import db
-from .models import StudentFace, Student
-from .utils import save_uploaded_file, process_and_save_image, extract_features, allowed_file
+from .models import StudentFace, Student, AttendanceImage, StudentClass, Attendance
+from .utils import save_uploaded_file, process_and_save_image, extract_features, allowed_file, save_uploaded_attendance_image, get_embeddings
 import os
 import subprocess
+import numpy as np
+import pickle
+from datetime import datetime
 def init_routes(app):
     @app.route('/')
     def home():
@@ -104,3 +107,152 @@ def init_routes(app):
     @app.route('/uploads/<path:filename>')
     def get_image(filename):
         return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
+    @app.route('/upload_attendance_image', methods=['POST'])
+    def upload_attendance_image():
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+
+        file = request.files['file']
+        class_id = request.form['class_id']
+        date = request.form['date']  # định dạng yyyy-mm-dd
+
+        if file and allowed_file(file.filename):
+            # Lưu file vào thư mục upload
+            file_path, original_url = save_uploaded_attendance_image(file, class_id, date)
+
+            # Lưu thông tin vào cơ sở dữ liệu
+            new_image = AttendanceImage(class_id=class_id, date=date, image_url=original_url)
+            db.session.add(new_image)
+            db.session.commit()
+
+            # Trả về phản hồi thành công
+            return jsonify({'success': 'File uploaded successfully', 'url': original_url}), 200
+
+        return jsonify({'error': 'File type not allowed'}), 400
+
+    @app.route('/upload_attendance/<class_id>/<date>/<filename>', methods=['GET'])
+    def get_attendance_image(class_id, date, filename):
+        directory = os.path.join(current_app.config['UPLOAD_ATTENDANCE_FOLDER'], class_id, date)
+        return send_from_directory(directory, filename)
+
+    @app.route('/attendance_image/<class_id>/<date>', methods=['GET'])
+    def get_attendance_images(class_id, date):
+        try:
+            images = AttendanceImage.query.filter_by(class_id=class_id, date=date).all()
+            if not images:
+                return jsonify({'error': 'No images found for this class and date'}), 404
+
+            image_data = [{'id': image.image_id, 'image_url': image.image_url} for image in images]
+            return jsonify({'images': image_data}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+    @app.route('/delete_attendance_image/<int:image_id>', methods=['DELETE'])
+    def delete_attendance_image(image_id):
+        try:
+            image = AttendanceImage.query.filter_by(image_id=image_id).first()
+            if not image:
+                return jsonify({'error': 'Image not found'}), 404
+
+            # Xóa file ảnh từ thư mục lưu trữ
+            image_path = os.path.join(current_app.config['UPLOAD_ATTENDANCE_FOLDER'],
+                                      image.image_url.split('/')[2], image.image_url.split('/')[3], image.image_url.split('/')[4])  # Bỏ dấu '/' ở đầu
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
+            # Xóa ảnh từ cơ sở dữ liệu
+            db.session.delete(image)
+            db.session.commit()
+
+            return jsonify({'success': f'Image {image_id} deleted successfully'}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+    @app.route('/attendance', methods=['POST'])
+    def attendance():
+        try:
+            class_id = request.json['class_id']
+            date = datetime.strptime(request.json['date'], '%Y-%m-%d').date()
+
+            # Predict attendance for all images in the specified folder
+            attendance_folder = os.path.join(current_app.config['UPLOAD_ATTENDANCE_FOLDER'], str(class_id), str(date))
+            if not os.path.exists(attendance_folder):
+                return jsonify({'error': 'Attendance folder not found'}), 400
+
+            # Fetch all student ids in the class
+            student_classes = StudentClass.query.filter_by(class_id=class_id).all()
+            student_ids = [sc.student_id for sc in student_classes]
+            student_class_map = {sc.student_id: sc.student_class_id for sc in student_classes}
+
+            X_train = []
+            y_train = []
+
+            # Load embeddings for all students in the class
+            for student_id in student_ids:
+                embeddings_file = os.path.join('embeddings', f'{student_id}.npz')
+                if not os.path.exists(embeddings_file):
+                    continue  # Bỏ qua nếu không tìm thấy file nhúng của sinh viên này
+
+                data = np.load(embeddings_file)
+                X_train.extend(data['embeddings'])
+                y_train.extend(data['labels'])
+
+            # Load model and encoder
+            model_file = 'models/svm_model.pkl'
+            encoder_file = 'models/svm_encoder.pkl'
+            with open(model_file, 'rb') as f:
+                model = pickle.load(f)
+            with open(encoder_file, 'rb') as f:
+                encoder = pickle.load(f)
+
+            present_student_ids = set()
+
+            # Process each image and predict
+            for img_file in os.listdir(attendance_folder):
+                img_path = os.path.join(attendance_folder, img_file)
+                embeddings = get_embeddings(img_path)
+                print(f"Processing image: {img_path}")
+                print(f"Detected {len(embeddings)} faces")
+
+                for test_embedding in embeddings:
+                    test_embedding = np.array(test_embedding).reshape(1, -1)
+                    y_pred = model.predict(test_embedding)
+                    predicted_label = encoder.inverse_transform(y_pred)[0]
+                    print(f"Predicted label for {img_file}: {predicted_label}")
+
+                    student_id = int(predicted_label)
+                    if student_id in student_class_map:
+                        present_student_ids.add(student_class_map[student_id])
+                        new_attendance = Attendance(
+                            student_class_id=student_class_map[student_id],
+                            date_attended=date,
+                            time_attended=datetime.now().strftime('%H:%M'),
+                            status='P',
+                            attendance_type='face'
+                        )
+                        db.session.add(new_attendance)
+
+            # Mark absent students
+            for student_class in student_classes:
+                if student_class.student_class_id not in present_student_ids:
+                    new_attendance = Attendance(
+                        student_class_id=student_class.student_class_id,
+                        date_attended=date,
+                        time_attended=datetime.now().strftime('%H:%M'),
+                        status='UA',
+                        attendance_type='face'
+                    )
+                    db.session.add(new_attendance)
+
+            db.session.commit()
+
+            return jsonify({'success': 'Attendance recorded successfully'}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+
+
+
+
+

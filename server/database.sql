@@ -88,13 +88,21 @@ CREATE TABLE attendance (
     CONSTRAINT fk_attendance_student_class FOREIGN KEY (student_class_id) REFERENCES student_class (student_class_id) ON DELETE SET NULL
 );
 
-CREATE TABLE student_faces (
-    face_id INT GENERATED ALWAYS AS IDENTITY,
-    student_id INT NOT NULL,
-    face_encoding BYTEA,
-    face_url VARCHAR,
-    PRIMARY KEY (face_id),
-    CONSTRAINT fk_face_student FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
+    CREATE TABLE student_faces (
+        face_id INT GENERATED ALWAYS AS IDENTITY,
+        student_id INT NOT NULL,
+        face_encoding BYTEA,
+        face_url VARCHAR,
+        PRIMARY KEY (face_id),
+        CONSTRAINT fk_face_student FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
+    );
+
+CREATE TABLE attendance_images (
+    image_id SERIAL PRIMARY KEY,
+    class_id INT NOT NULL,
+    date DATE NOT NULL,
+    image_url VARCHAR NOT NULL,
+    CONSTRAINT fk_image_class FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE
 );
 
 

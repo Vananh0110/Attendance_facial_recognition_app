@@ -4,11 +4,9 @@ import dlib
 from skimage import io, transform
 
 class FACELOADING:
-    def __init__(self, directory):
+    def __init__(self, directory, target_size=(160, 160)):
         self.directory = directory
-        self.target_size = (160, 160)
-        self.X = []
-        self.Y = []
+        self.target_size = target_size
         self.detector = dlib.get_frontal_face_detector()
 
     def extract_face(self, img):
@@ -32,7 +30,6 @@ class FACELOADING:
                     FACES.append(single_face)
             except Exception as e:
                 print(f"Error processing image {im_name}: {e}")
-                pass
         return FACES
 
     def load_classes(self):
@@ -41,11 +38,10 @@ class FACELOADING:
             FACES = self.load_faces(path)
             labels = [sub_dir for _ in range(len(FACES))]
             print(f"Loaded successfully: {len(labels)}")
-            self.X.extend(FACES)
-            self.Y.extend(labels)
-        return np.asarray(self.X), np.asarray(self.Y)
+            if FACES:  # Only save if there are faces detected
+                os.makedirs('preprocess', exist_ok=True)
+                np.savez_compressed(f'preprocess/{sub_dir}.npz', data=np.array(FACES), labels=np.array(labels))
 
 if __name__ == "__main__":
     faceloading = FACELOADING("uploads")
-    X, Y = faceloading.load_classes()
-    np.savez_compressed('preprocess/data.npz', data=X, labels=Y)
+    faceloading.load_classes()
