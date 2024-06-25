@@ -16,6 +16,7 @@ import {
   Provider,
   IconButton,
   Portal,
+  Tooltip,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -31,9 +32,11 @@ const FaceRecognitionAttendance = ({ route }) => {
 
   useEffect(() => {
     (async () => {
-      const { status } =
+      const { status } = await Camera.requestPermissionsAsync();
+      setCameraPermission(status === 'granted');
+      const { status: imageStatus } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
+      if (imageStatus !== 'granted') {
         Alert.alert(
           'Permission required',
           'We need your permission to access your photos.'
@@ -50,10 +53,8 @@ const FaceRecognitionAttendance = ({ route }) => {
         `${API_FLASK_BASE_URL}/attendance_image/${classId}/${date}`
       );
       setImages(response.data.images);
-      console.log(response.data);
     } catch (error) {
       console.error('Failed to fetch images');
-      Alert.alert('Error', 'Failed to fetch images');
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,6 @@ const FaceRecognitionAttendance = ({ route }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      // aspect: [4, 3],
       quality: 1,
     });
 
@@ -132,6 +132,30 @@ const FaceRecognitionAttendance = ({ route }) => {
     }
   };
 
+  const handleProceedAttendance = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_FLASK_BASE_URL}/attendance`, {
+        class_id: classId,
+        date: date,
+      });
+      if (response.status === 200) {
+        Alert.alert('Success', 'Attendance recorded successfully');
+        navigation.navigate('TeacherReportAttendanceDetail', {
+          classId: classId,
+          date: date,
+        });
+      } else {
+        Alert.alert('Error', 'Failed to proceed attendance');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while proceeding attendance');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderItem = ({ item }) => (
     <Card style={styles.card}>
       <TouchableOpacity
@@ -168,9 +192,17 @@ const FaceRecognitionAttendance = ({ route }) => {
         />
       </Appbar.Header>
       <View style={styles.container}>
-        <Button mode="contained" onPress={pickImage} style={styles.button}>
-          Pick images from camera roll
-        </Button>
+        <View style={styles.buttonContainer}>
+          <Tooltip title="Upload Images To Attendance">
+            <IconButton
+              icon="upload"
+              color="#00B0FF"
+              size={30}
+              onPress={pickImage}
+              style={styles.iconButton}
+            />
+          </Tooltip>
+        </View>
         <FlatList
           data={images}
           renderItem={renderItem}
@@ -185,6 +217,15 @@ const FaceRecognitionAttendance = ({ route }) => {
             style={styles.loading}
           />
         )}
+        {images.length > 0 && (
+          <Button
+            mode="contained"
+            onPress={handleProceedAttendance}
+            style={styles.proceedButton}
+          >
+            Proceed Attendance
+          </Button>
+        )}
         <Portal>
           <Modal
             visible={!!selectedImage}
@@ -192,13 +233,13 @@ const FaceRecognitionAttendance = ({ route }) => {
           >
             <View style={styles.modalContent}>
               <Image source={{ uri: selectedImage }} style={styles.fullImage} />
-              <Button
+              <IconButton
+                icon="close"
+                size={30}
+                color="#00B0FF"
                 onPress={() => setSelectedImage(null)}
-                labelStyle={{ color: '#00B0FF' }}
-                rippleColor="#d3e3ff"
-              >
-                Close
-              </Button>
+                style={styles.closeButton}
+              />
             </View>
           </Modal>
         </Portal>
@@ -220,9 +261,13 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#ffffff',
   },
-  button: {
+  iconButton: {
     marginBottom: 20,
-    backgroundColor: '#00B0FF',
+    backgroundColor: '#d3e3ff',
+  },
+  buttonContainer: {
+    alignItems: 'flex-end',
+    marginTop: 10,
   },
   imagesContainer: {
     justifyContent: 'center',
@@ -231,6 +276,7 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     margin: 10,
+    backgroundColor: '#d3e3ff',
   },
   image: {
     height: 150,
@@ -242,11 +288,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'ffffff'
+    backgroundColor: 'ffffff',
   },
   fullImage: {
     width: '90%',
     height: '90%',
     resizeMode: 'contain',
+  },
+  proceedButton: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    margin: 10,
+    backgroundColor: '#00b0ff',
+    width: '50%',
+    alignSelf: 'center',
+    marginHorizontal: '25%',
+  },
+  closeButton: {
+    backgroundColor: '#DCDCDC',
   },
 });

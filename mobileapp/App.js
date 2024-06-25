@@ -22,6 +22,7 @@ import StudentDetailClass from './src/screens/student/class/StudentDetailClass.j
 import StudentProfile from './src/screens/student/profile/StudentProfile.jsx';
 import QrCodeDisplayScreen from './src/screens/teacher/attendance/qrcode/QrCodeDisplayScreen.jsx';
 import StudentQrCodeScanner from './src/screens/student/attendance/StudentQrCodeScanner.jsx';
+import StudentFaceVerification from './src/screens/student/attendance/StudentFaceVerification.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +30,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="TeacherHomeScreen"
+        initialRouteName="Welcome"
         screenOptions={{
           statusBarColor: '#00B0FF',
           headerStyle: {
@@ -159,6 +160,12 @@ function App() {
         <Stack.Screen
           name="StudentQrCodeScanner"
           component={StudentQrCodeScanner}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="StudentFaceVerification"
+          component={StudentFaceVerification}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -10,10 +10,9 @@ import {
 import { Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Camera, CameraType } from 'expo-camera/legacy';
-import axios from '../../../api/axios';
 
 const StudentQrCodeScanner = ({ route }) => {
-  const { classId, date, studentClassId } = route.params;
+  const { studentId, studentClassId } = route.params;
   const navigation = useNavigation();
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [scanned, setScanned] = useState(false);
@@ -32,55 +31,11 @@ const StudentQrCodeScanner = ({ route }) => {
     setScanned(true);
     console.log(`QR code with type ${type} and data ${data} has been scanned!`);
     const qrData = JSON.parse(data);
-    const { classId, date, expirationTime } = qrData;
-    markAttendance(date, expirationTime);
-  };
-
-  const markAttendance = async (date, expirationTime) => {
-    const student_class_id = studentClassId;
-    const date_attended = date;
-    const now = new Date();
-    const time_attended = `${now.getHours()}:${now
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}`;
-    const status = 'P';
-    const attendance_type = 'QR';
-
-    try {
-      const response = await axios.post('/attendance/qr', {
-        student_class_id,
-        date_attended,
-        time_attended,
-        status,
-        attendance_type,
-        expiration_time: expirationTime,
-      });
-
-      console.log('Success:', response.data);
-      Alert.alert('Success', 'Attendance marked successfully', [
-        {
-          text: 'OK',
-          onPress: () =>
-            navigation.navigate('TeacherReportAttendanceDetail', {
-              classId,
-              date,
-            }),
-        },
-      ]);
-    } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
-      Alert.alert(
-        'Error',
-        error.response?.data?.message || 'Failed to mark attendance',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.goBack(),
-          },
-        ]
-      );
-    }
+    navigation.navigate('StudentFaceVerification', {
+      studentId,
+      qrData,
+      studentClassId,
+    });
   };
 
   if (!permission) {

@@ -36,6 +36,7 @@ const StudentDetailScreen = ({ route }) => {
   const [visible, setVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentClassId, setStudentClassId] = useState(null);
+  const [studentId, setStudentId] = useState(null);
 
   useEffect(() => {
     fetchClassAndStudents();
@@ -55,6 +56,7 @@ const StudentDetailScreen = ({ route }) => {
       );
       if (student) {
         setStudentClassId(student.student_class_id);
+        setStudentId(student.student_id);
       }
       setLoading(false);
     } catch (error) {
@@ -112,6 +114,7 @@ const StudentDetailScreen = ({ route }) => {
       classId,
       date,
       studentClassId,
+      studentId
     });
   };
 
