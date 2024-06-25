@@ -1,12 +1,17 @@
 from flask import request, jsonify, current_app, send_from_directory
 from . import db
 from .models import StudentFace, Student, AttendanceImage, StudentClass, Attendance
-from .utils import save_uploaded_file, process_and_save_image, extract_features, allowed_file, save_uploaded_attendance_image, get_embeddings
+from .utils import save_uploaded_file, process_and_save_image, extract_features, allowed_file, save_uploaded_attendance_image, get_embeddings, get_embedding
 import os
 import subprocess
 import numpy as np
 import pickle
 from datetime import datetime
+from skimage import io, transform
+from werkzeug.utils import secure_filename
+import dlib
+
+detector = dlib.get_frontal_face_detector()
 def init_routes(app):
     @app.route('/')
     def home():
@@ -251,6 +256,52 @@ def init_routes(app):
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
+    @app.route('/face_recognition/verify', methods=['POST'])
+    def verify_face():
+        try:
+            if 'file' not in request.files:
+                return jsonify({'error': 'No file part'}), 400
+            file = request.files['file']
+            if file.filename == '':
+                return jsonify({'error': 'No selected file'}), 400
+            if 'student_id' not in request.form:
+                return jsonify({'error': 'No student_id provided'}), 400
+
+            student_id = request.form['student_id']
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(current_app.config['TEMP_UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            # Get the embedding of the uploaded face image
+            embedding = get_embedding(file_path)
+            if embedding is None:
+                return jsonify({'error': 'No face detected in the image'}), 400
+
+            # Load the stored embeddings and labels
+            embeddings_file = os.path.join('embeddings', f'{student_id}.npz')
+            if not os.path.exists(embeddings_file):
+                return jsonify({'error': 'Embeddings for the student_id not found'}), 400
+
+            data = np.load(embeddings_file)
+            stored_embeddings = data['embeddings']
+            stored_labels = data['labels']
+            print(f"Loaded {stored_embeddings.shape[0]} embeddings for student_id {student_id}")
+
+            # Compare the uploaded face embedding with stored embeddings
+            distances = np.linalg.norm(stored_embeddings - embedding, axis=1)
+            min_distance_index = np.argmin(distances)
+            min_distance = distances[min_distance_index]
+
+            print(f"Min distance: {min_distance}, Index: {min_distance_index}")
+
+            # Threshold for verification (You may need to adjust this value)
+            threshold = 0.8
+
+            verified = bool(min_distance < threshold)
+
+            return jsonify({'verified': bool(verified), 'distance': float(min_distance)}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 
 

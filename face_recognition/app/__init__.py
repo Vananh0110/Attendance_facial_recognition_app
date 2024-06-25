@@ -15,6 +15,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, '..', 'uploads')
     app.config['UPLOAD_ATTENDANCE_FOLDER'] = os.path.join(app.root_path, '..', 'upload_attendance')
+    app.config['TEMP_UPLOAD_FOLDER'] = os.path.join(app.root_path, '..', 'temp_uploads')
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
     db.init_app(app)

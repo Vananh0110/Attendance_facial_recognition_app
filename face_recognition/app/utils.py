@@ -76,3 +76,22 @@ def get_embeddings(img_path):
 
     return embeddings
 
+def get_embedding(img_path):
+    img = io.imread(img_path)
+    dets = detector(img, 1)
+    if len(dets) == 0:
+        print("No face detected")
+        return None  # Không phát hiện khuôn mặt
+    print(f"Detected {len(dets)} faces")
+    d = dets[0]  # Chỉ sử dụng khuôn mặt đầu tiên phát hiện được
+    left, top, right, bottom = (d.left(), d.top(), d.right(), d.bottom())
+    face = img[top:bottom, left:right]
+    face_resized = transform.resize(face, (160, 160))
+    face_resized = face_resized.astype('float32')
+    face_resized = np.transpose(face_resized, (2, 0, 1))  # Chuyển đổi từ HWC sang CHW
+    face_resized = torch.tensor(face_resized).unsqueeze(0)  # Thêm batch dimension
+    with torch.no_grad():
+        embedding = model(face_resized)
+    print(f"Generated embedding: {embedding.shape}")
+    return embedding.squeeze().numpy()
+
