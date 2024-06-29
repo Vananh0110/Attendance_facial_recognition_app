@@ -193,6 +193,15 @@ const FaceRecognitionAttendance = ({ route }) => {
       </Appbar.Header>
       <View style={styles.container}>
         <View style={styles.buttonContainer}>
+        <Tooltip title="Upload Images To Attendance">
+            <IconButton
+              icon="camera"
+              color="#00B0FF"
+              size={30}
+              onPress={pickImage}
+              style={styles.iconButton}
+            />
+          </Tooltip>
           <Tooltip title="Upload Images To Attendance">
             <IconButton
               icon="upload"

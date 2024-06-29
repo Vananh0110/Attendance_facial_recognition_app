@@ -51,7 +51,7 @@ const StudentFaceVerification = ({ route }) => {
       formData.append('student_id', studentId);
 
       console.log("FormData: ", formData); 
-
+      console.log()
       const response = await axios.post(
         `${API_FLASK_BASE_URL}/face_recognition/verify`,
         formData,
@@ -98,6 +98,7 @@ const StudentFaceVerification = ({ route }) => {
         expiration_time: expirationTime,
       });
 
+      console.log(classId, date);
       console.log('Success:', response.data);
       Alert.alert('Success', 'Attendance marked successfully', [
         {

@@ -86,6 +86,7 @@ const StudentReport = ({ userId }) => {
   };
 
   const handleDatePress = (classId, date) => {
+    console.log(classId, date);
     navigation.navigate('TeacherReportAttendanceDetail', {
       classId: classId,
       date: date,

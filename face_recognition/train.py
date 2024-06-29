@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Mã hóa nhãn
     encoder = LabelEncoder()
     Y = encoder.fit_transform(Y)
-
+    
     # Chia dữ liệu thành tập huấn luyện và tập kiểm tra
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.25, random_state=42)
 
