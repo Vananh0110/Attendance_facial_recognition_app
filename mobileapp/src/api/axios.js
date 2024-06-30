@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL } from '@env';
 
 export default axios.create({
-  baseURL: 'http://192.168.102.26:5000',
+  baseURL: `${API_BASE_URL}`,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
