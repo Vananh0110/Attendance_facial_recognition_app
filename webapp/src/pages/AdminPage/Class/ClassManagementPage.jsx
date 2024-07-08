@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 import {
   message,
@@ -51,7 +51,7 @@ const ClassManagementPage = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get('/class/all');
+      const response = await axiosMain.get('/class/all');
       console.log(response.data);
       setClasses(response.data);
     } catch (error) {
@@ -81,7 +81,7 @@ const ClassManagementPage = () => {
       title: 'Are you sure you want to delete this class?',
       content: 'This action cannot be undone',
       onOk() {
-        axios
+        axiosMain
           .delete(`/class/${classId}`)
           .then(() => {
             message.success('Class deleted successfully');
@@ -99,7 +99,7 @@ const ClassManagementPage = () => {
   };
 
   const handleUpdate = (classId, values) => {
-    axios
+    axiosMain
       .put(`/class/${classId}`, values)
       .then(() => {
         message.success('Class updated successfully');
@@ -113,7 +113,7 @@ const ClassManagementPage = () => {
 
   const handleCreateNewClass = (values) => {
     console.log(values);
-    axios
+    axiosMain
       .post('/class', values)
       .then(() => {
         message.success('Class added successfully');

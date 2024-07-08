@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../../components/Teacher/Layout';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import '../../../App.css';
 import {
   message,
@@ -39,7 +39,7 @@ const AdminProfile = () => {
 
   const fetchUser = async (userId) => {
     try {
-      const response = await axios.get(`/user/${userId}`);
+      const response = await axiosMain.get(`/user/${userId}`);
       console.log(response.data);
       setUserData(response.data);
     } catch (error) {
@@ -52,7 +52,7 @@ const AdminProfile = () => {
     formData.append('avatar', file);
 
     try {
-      const response = await axios.post(`/user/upload-avatar/${userId}`, formData, {
+      const response = await axiosMain.post(`/user/upload-avatar/${userId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -67,7 +67,7 @@ const AdminProfile = () => {
 
   const handleChangePassword = async (values) => {
     try {
-      const response = await axios.post(
+      const response = await axiosMain.post(
         `/user/change-password/${userId}`,
         values
       );

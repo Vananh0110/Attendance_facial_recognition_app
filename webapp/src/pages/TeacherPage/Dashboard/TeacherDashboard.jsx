@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Teacher/Layout';
 import '../../../App.css';
 import teacherDashboardImg from '../../../assets/images/teacherdashboard.png';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 import { useNavigate, Link } from 'react-router-dom';
 import { Progress } from 'antd';
@@ -38,7 +38,7 @@ const TeacherDashboardPage = () => {
     const todayDate = moment().format('YYYY-MM-DD');
 
     try {
-      const response = await axios.get(`/class/all`);
+      const response = await axiosMain.get(`/class/all`);
       const data = response.data.filter((cls) => cls.user_id === userId);
       const todayClasses = data
         .filter((cls) => {
@@ -65,7 +65,7 @@ const TeacherDashboardPage = () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userId = user.user_id;
     try {
-      const response = await axios.get('/class/all');
+      const response = await axiosMain.get('/class/all');
       const data = response.data.filter(
         (cls) => cls.user_id === userId
       );

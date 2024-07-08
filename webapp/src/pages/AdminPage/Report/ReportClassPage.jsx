@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
@@ -20,7 +20,7 @@ const ReportClassPage = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get(`/class/listclasses/${courseId}`);
+      const response = await axiosMain.get(`/class/listclasses/${courseId}`);
       console.log(response.data);
       setClasses(response.data);
     } catch (error) {

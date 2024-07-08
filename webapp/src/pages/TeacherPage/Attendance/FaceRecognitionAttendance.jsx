@@ -4,7 +4,7 @@ import '../../../App.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Upload, Button, List, Card, message, Modal, Image, Spin } from 'antd';
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import {axiosFlask} from '../../../api/axios';
 
 const { Dragger } = Upload;
 
@@ -21,8 +21,8 @@ const FaceRecognitionAttendance = () => {
 
   const fetchImages = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_FLASK_BASE_URL}/attendance_image/${classId}/${date}`
+      const response = await axiosFlask.get(
+        `/attendance_image/${classId}/${date}`
       );
       setImages(response.data.images);
       console.log(response.data);
@@ -38,8 +38,8 @@ const FaceRecognitionAttendance = () => {
     formData.append('date', date);
 
     try {
-      await axios.post(
-        `${process.env.REACT_APP_FLASK_BASE_URL}/upload_attendance_image`,
+      await axiosFlask.post(
+        '/upload_attendance_image',
         formData
       );
       message.success('Image uploaded successfully');
@@ -52,8 +52,8 @@ const FaceRecognitionAttendance = () => {
 
   const handleDelete = async (imageId) => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_FLASK_BASE_URL}/delete_attendance_image/${imageId}`
+      await axiosFlask.delete(
+        `/delete_attendance_image/${imageId}`
       );
       message.success('Image deleted successfully');
       setImages((prevImages) =>
@@ -67,7 +67,7 @@ const FaceRecognitionAttendance = () => {
   const handleProceedAttendance = async () => {
     setLoading(true);
     try {
-      await axios.post(`${process.env.REACT_APP_FLASK_BASE_URL}/attendance`, {
+      await axiosFlask.post('/attendance', {
         class_id: classId,
         date: date,
       });

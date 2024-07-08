@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../../components/Student/Layout';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import '../../../App.css';
 import {
   message,
@@ -41,7 +41,7 @@ const StudentProfile = () => {
 
   const fetchUser = async (userId) => {
     try {
-      const response = await axios.get(`/student/user/${userId}`);
+      const response = await axiosMain.get(`/student/user/${userId}`);
       console.log(response.data);
       setUserData(response.data);
     } catch (error) {
@@ -51,7 +51,7 @@ const StudentProfile = () => {
 
   const fetchClasses = async (userId) => {
     try {
-      const response = await axios.get(`/studentClass/getClass/${userId}`);
+      const response = await axiosMain.get(`/studentClass/getClass/${userId}`);
       setClasses(response.data);
     } catch (error) {
       console.error('Failed to fetch classes', error);
@@ -64,7 +64,7 @@ const StudentProfile = () => {
     formData.append('avatar', file);
 
     try {
-      const response = await axios.post(
+      const response = await axiosMain.post(
         `/user/upload-avatar/${userId}`,
         formData,
         {
@@ -83,7 +83,7 @@ const StudentProfile = () => {
 
   const handleChangePassword = async (values) => {
     try {
-      const response = await axios.post(
+      const response = await axiosMain.post(
         `/user/change-password/${userId}`,
         values
       );

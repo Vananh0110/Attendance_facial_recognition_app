@@ -6,6 +6,7 @@ import PrivateRoute from './components/PrivateRoute';
 import RegisterPage from './pages/RegisterPage';
 import TeacherDashboard from './pages/TeacherPage/Dashboard/TeacherDashboard';
 import AdminDashboardPage from './pages/AdminPage/Dashboard/DashboardPage';
+import AdminStudentPicture from './pages/AdminPage/Student/AdminStudentPicture';
 import TeacherManagementPage from './pages/AdminPage/Teacher/TeacherManagementPage';
 import StudentManagementPage from './pages/AdminPage/Student/StudentManagementPage';
 import ClassManagementPage from './pages/AdminPage/Class/ClassManagementPage';
@@ -15,6 +16,7 @@ import ReportAttendancePage from './pages/AdminPage/Report/ReportAttendancePage'
 import ReportClassPage from './pages/AdminPage/Report/ReportClassPage';
 import ReportAttendanceDetail from './pages/AdminPage/Report/ReportAttendanceDetail';
 import StudentTeacherManagement from './pages/TeacherPage/Student/StudentTeacherManagement';
+import TeacherStudentPicture from './pages/TeacherPage/Student/TeacherStudentPicture';
 import CourseTeacherManagement from './pages/TeacherPage/Course/CourseTeacherManagement';
 import ClassTeacherManagement from './pages/TeacherPage/Class/ClassTeacherManagement';
 import ScheduleTeacherManagement from './pages/TeacherPage/Schedule/ScheduleTeacherManagement';
@@ -67,6 +69,14 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['admin']}>
               <StudentManagementPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/students/:studentId/pictures"
+          element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminStudentPicture/>
             </PrivateRoute>
           }
         />
@@ -143,6 +153,14 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['teacher']}>
               <StudentTeacherManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/students/:studentId/pictures"
+          element={
+            <PrivateRoute allowedRoles={['teacher']}>
+              <TeacherStudentPicture />
             </PrivateRoute>
           }
         />

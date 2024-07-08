@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Upload, Button, Modal, List, Card, Image, message } from 'antd';
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import Layout from '../../../components/Student/Layout';
-import axios from 'axios';
+import { axiosFlask } from '../../../api/axios';
 import '../../../App.css';
 
 const { Dragger } = Upload;
@@ -26,8 +26,8 @@ const StudentPicture = () => {
 
   const fetchStudentId = async (userId) => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_FLASK_BASE_URL}/getStudentId/${userId}`
+      const response = await axiosFlask.get(
+        `/getStudentId/${userId}`
       );
       setStudentId(response.data.student_id);
     } catch (error) {
@@ -37,8 +37,8 @@ const StudentPicture = () => {
 
   const fetchPictures = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_FLASK_BASE_URL}/pictures/${studentId}`
+      const response = await axiosFlask.get(
+        `/pictures/${studentId}`
       );
       setPictures(response.data);
       console.log(response.data);
@@ -53,8 +53,8 @@ const StudentPicture = () => {
     formData.append('student_id', studentId);
 
     try {
-      await axios.post(
-        `${process.env.REACT_APP_FLASK_BASE_URL}/upload`,
+      await axiosFlask.post(
+        '/upload',
         formData
       );
       message.success('Upload successful');
@@ -67,8 +67,8 @@ const StudentPicture = () => {
 
   const handleDelete = async (pictureId) => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_FLASK_BASE_URL}/delete/${pictureId}`
+      await axiosFlask.delete(
+        `/delete/${pictureId}`
       );
       message.success('Delete successful');
       fetchPictures();

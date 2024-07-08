@@ -6,7 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Layout from '../../../components/Student/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 
 const StudentSchedulePage = () => {
@@ -23,7 +23,7 @@ const StudentSchedulePage = () => {
     const userId = user.user_id;
     console.log(userId);
     try {
-      const response = await axios.get(`/studentClass/getClass/${userId}`);
+      const response = await axiosMain.get(`/studentClass/getClass/${userId}`);
       const data = response.data;
       let allEvents = [];
       data.forEach((cls) => {

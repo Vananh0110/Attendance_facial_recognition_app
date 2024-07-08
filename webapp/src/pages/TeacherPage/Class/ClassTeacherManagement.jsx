@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Teacher/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 import {
   message,
@@ -55,7 +55,7 @@ const ClassTeacherManagement = () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userId = user.user_id;
     try {
-      const response = await axios.get('/class/all');
+      const response = await axiosMain.get('/class/all');
 
       const filteredData = response.data.filter(
         (cls) => cls.user_id === userId
@@ -89,7 +89,7 @@ const ClassTeacherManagement = () => {
       title: 'Are you sure you want to delete this class?',
       content: 'This action cannot be undone',
       onOk() {
-        axios
+        axiosMain
           .delete(`/class/${classId}`)
           .then(() => {
             message.success('Class deleted successfully');
@@ -107,7 +107,7 @@ const ClassTeacherManagement = () => {
   };
 
   const handleUpdate = (classId, values) => {
-    axios
+    axiosMain
       .put(`/class/${classId}`, values)
       .then(() => {
         message.success('Class updated successfully');
@@ -121,7 +121,7 @@ const ClassTeacherManagement = () => {
 
   const handleCreateNewClass = (values) => {
     console.log(values);
-    axios
+    axiosMain
       .post('/class', values)
       .then(() => {
         message.success('Class added successfully');

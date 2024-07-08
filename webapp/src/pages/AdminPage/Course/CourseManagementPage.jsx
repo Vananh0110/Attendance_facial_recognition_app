@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import * as XLSX from 'xlsx';
 import { Button, Table, Upload, message, Tooltip, Input, Modal } from 'antd';
 import {
@@ -26,7 +26,7 @@ const CourseManagementPage = () => {
 
   const fetchCourse = async () => {
     try {
-      const response = await axios.get('/course/all');
+      const response = await axiosMain.get('/course/all');
       console.log(response.data);
       setCourses(response.data);
     } catch (error) {
@@ -40,7 +40,7 @@ const CourseManagementPage = () => {
 
     setUploading(true);
 
-    axios
+    axiosMain
       .post('/course/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -74,7 +74,7 @@ const CourseManagementPage = () => {
     Modal.confirm({
       title: 'Are you sure delete this course?',
       onOk() {
-        axios
+        axiosMain
           .delete(`/course/${courseId}`)
           .then(() => {
             message.success('course deleted successfully');
@@ -95,7 +95,7 @@ const CourseManagementPage = () => {
   };
 
   const handleUpdate = (courseId, values) => {
-    axios
+    axiosMain
       .put(`/course/${courseId}`, values)
       .then(() => {
         message.success('course updated successfully');
@@ -108,7 +108,7 @@ const CourseManagementPage = () => {
   };
 
   const handleCreateNewCourse = (values) => {
-    axios
+    axiosMain
       .post('/course', values)
       .then(() => {
         message.success('course added successfully');

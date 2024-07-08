@@ -12,7 +12,7 @@ import {
   message,
 } from 'antd';
 import moment from 'moment';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import { EditOutlined } from '@ant-design/icons';
 import AddCourseModal from '../../Admin/Course/AddCourseModal';
 const { Option } = Select;
@@ -32,7 +32,7 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('/course/all');
+      const response = await axiosMain.get('/course/all');
       setCourses(response.data);
     } catch (error) {
       console.error('Failed to fetch courses:', error);
@@ -44,7 +44,7 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
     const userId = user.user_id;
     console.log(userId);
     try {
-      const response = await axios.get('/teacher/all');
+      const response = await axiosMain.get('/teacher/all');
       const filteredTeacher = response.data.filter(
         (teacher) => teacher.user_id === userId
       );
@@ -55,7 +55,7 @@ const EditClassModal = ({ visible, onClose, classData, onUpdate }) => {
   };
 
   const handleCreateNewCourse = (values) => {
-    axios
+    axiosMain
       .post('/course', values)
       .then(() => {
         message.success('course added successfully');

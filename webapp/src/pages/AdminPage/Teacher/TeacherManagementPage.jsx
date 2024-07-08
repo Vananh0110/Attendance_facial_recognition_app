@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import * as XLSX from 'xlsx';
 import {
   Button,
@@ -38,7 +38,7 @@ const TeacherManagementPage = () => {
 
   const fetchTeacher = async () => {
     try {
-      const response = await axios.get('/teacher/all');
+      const response = await axiosMain.get('/teacher/all');
       console.log(response.data);
       setTeachers(response.data);
     } catch (error) {
@@ -52,7 +52,7 @@ const TeacherManagementPage = () => {
 
     setUploading(true);
 
-    axios
+    axiosMain
       .post('/teacher/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -87,7 +87,7 @@ const TeacherManagementPage = () => {
     Modal.confirm({
       title: 'Are you sure delete this teacher?',
       onOk() {
-        axios
+        axiosMain
           .delete(`/teacher/${teacherId}`)
           .then(() => {
             message.success('Teacher deleted successfully');
@@ -108,7 +108,7 @@ const TeacherManagementPage = () => {
   };
 
   const handleUpdate = (teacherId, values) => {
-    axios
+    axiosMain
       .put(`/teacher/${teacherId}`, values)
       .then(() => {
         message.success('Teacher updated successfully');
@@ -121,7 +121,7 @@ const TeacherManagementPage = () => {
   };
 
   const handleCreateNewTeacher = (values) => {
-    axios
+    axiosMain
       .post('/teacher', values)
       .then(() => {
         message.success('Teacher added successfully');

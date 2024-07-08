@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../../components/Teacher/Layout';
 import '../../../App.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import {
   Table,
   message,
@@ -39,7 +39,7 @@ const TeacherAttendanceClassDetail = () => {
   }, [classId]);
   const fetchClassInfo = async () => {
     try {
-      const response = await axios.get(`/class/${classId}`);
+      const response = await axiosMain.get(`/class/${classId}`);
       setClassInfo(response.data);
     } catch (error) {
       console.error('Fail to fetch class info', error);
@@ -48,7 +48,7 @@ const TeacherAttendanceClassDetail = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosMain.get(
         `/studentClass/getStudentInClass/${classId}`
       );
       setStudents(response.data);
@@ -59,7 +59,7 @@ const TeacherAttendanceClassDetail = () => {
 
   const fetchSchedule = async () => {
     try {
-      const scheduleData = await axios.get(
+      const scheduleData = await axiosMain.get(
         `/class/${classId}/schedule`
       );
       setSchedule(scheduleData.data);

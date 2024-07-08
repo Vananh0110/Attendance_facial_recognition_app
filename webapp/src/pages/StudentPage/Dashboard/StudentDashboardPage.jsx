@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Student/Layout';
 import '../../../App.css';
 import studentDashboardImg from '../../../assets/images/studentdashboard.png';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 import { useNavigate, Link } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
@@ -61,7 +61,7 @@ const StudentDashboardPage = () => {
     const todayDate = moment().format('YYYY-MM-DD');
 
     try {
-      const response = await axios.get(`/studentClass/getClass/${userId}`);
+      const response = await axiosMain.get(`/studentClass/getClass/${userId}`);
       const data = response.data;
       const todayClasses = data
         .filter((cls) => {
@@ -90,7 +90,7 @@ const StudentDashboardPage = () => {
 
   const fetchAttendanceData = async (userId) => {
     try {
-      const response = await axios.get(
+      const response = await axiosMain.get(
         `/attendance/getStudentAttendance/${userId}`
       );
       const data = response.data;

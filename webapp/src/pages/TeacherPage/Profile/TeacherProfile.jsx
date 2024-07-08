@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../../components/Teacher/Layout';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import '../../../App.css';
 import {
   message,
@@ -41,7 +41,7 @@ const TeacherProfile = () => {
 
   const fetchUser = async (userId) => {
     try {
-      const response = await axios.get(`/teacher/user/${userId}`);
+      const response = await axiosMain.get(`/teacher/user/${userId}`);
       console.log(response.data);
       setUserData(response.data);
     } catch (error) {
@@ -51,7 +51,7 @@ const TeacherProfile = () => {
 
   const fetchClasses = async (userId) => {
     try {
-      const response = await axios.get('/class/all');
+      const response = await axiosMain.get('/class/all');
       const filteredClasses = response.data.filter(
         (cls) => cls.user_id === userId
       );
@@ -68,7 +68,7 @@ const TeacherProfile = () => {
     formData.append('avatar', file);
 
     try {
-      const response = await axios.post(`/user/upload-avatar/${userId}`, formData, {
+      const response = await axiosMain.post(`/user/upload-avatar/${userId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -83,7 +83,7 @@ const TeacherProfile = () => {
 
   const handleChangePassword = async (values) => {
     try {
-      const response = await axios.post(
+      const response = await axiosMain.post(
         `/user/change-password/${userId}`,
         values
       );

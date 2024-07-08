@@ -5,7 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Layout from '../../../components/Teacher/Layout';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 import '../../../App.css';
 
@@ -22,7 +22,7 @@ const ScheduleTeacherManagement = () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userId = user.user_id;
     try {
-      const response = await axios.get('/class/all');
+      const response = await axiosMain.get('/class/all');
       const filteredData = response.data.filter(
         (cls) => cls.user_id === userId
       );

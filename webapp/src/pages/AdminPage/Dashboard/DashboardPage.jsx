@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Admin/Layout';
 import adminDashboardImg from '../../../assets/images/admindashboard.png';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import { Row, Col } from 'antd';
 import {
   UserOutlined,
@@ -39,10 +39,10 @@ const AdminDashboardPage = () => {
     try {
       const [teachersRes, studentsRes, classesRes, coursesRes] =
         await Promise.all([
-          axios.get('/teacher/all'),
-          axios.get('/student/all'),
-          axios.get('/class/all'),
-          axios.get('/course/all'),
+          axiosMain.get('/teacher/all'),
+          axiosMain.get('/student/all'),
+          axiosMain.get('/class/all'),
+          axiosMain.get('/course/all'),
         ]);
 
       setStatistics({

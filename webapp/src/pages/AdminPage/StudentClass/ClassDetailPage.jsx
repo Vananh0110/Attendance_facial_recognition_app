@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
 import { useParams } from 'react-router-dom';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import {
   Table,
   message,
@@ -36,7 +36,7 @@ const ClassDetailPage = () => {
   }, [classId]);
   const fetchClassInfo = async () => {
     try {
-      const response = await axios.get(`/class/${classId}`);
+      const response = await axiosMain.get(`/class/${classId}`);
       setClassInfo(response.data);
     } catch (error) {
       console.error('Fail to fetch class info', error);
@@ -45,7 +45,7 @@ const ClassDetailPage = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosMain.get(
         `/studentClass/getStudentInClass/${classId}`
       );
       setStudents(response.data);
@@ -98,7 +98,7 @@ const ClassDetailPage = () => {
       onOk: async () => {
         try {
           for (const studentId of selectedRowKeys) {
-            await axios.delete(`/studentClass/${studentId}`);
+            await axiosMain.delete(`/studentClass/${studentId}`);
           }
           message.success('Deleted selected students successfully');
           fetchStudents();

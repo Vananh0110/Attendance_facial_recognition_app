@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import * as XLSX from 'xlsx';
 import {
   Button,
@@ -31,6 +32,7 @@ const StudentManagementPage = () => {
   const [uploading, setUploading] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStudent();
@@ -38,7 +40,7 @@ const StudentManagementPage = () => {
 
   const fetchStudent = async () => {
     try {
-      const response = await axios.get('/student/all');
+      const response = await axiosMain.get('/student/all');
       console.log(response.data);
       setStudents(response.data);
     } catch (error) {
@@ -52,7 +54,7 @@ const StudentManagementPage = () => {
 
     setUploading(true);
 
-    axios
+    axiosMain
       .post('/student/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -86,11 +88,12 @@ const StudentManagementPage = () => {
     );
   });
 
-  const handleDelete = (studentId) => {
+  const handleDelete = (studentId, e) => {
+    e.stopPropagation();
     Modal.confirm({
       title: 'Are you sure delete this student?',
       onOk() {
-        axios
+        axiosMain
           .delete(`/student/${studentId}`)
           .then(() => {
             message.success('Student deleted successfully');
@@ -106,12 +109,13 @@ const StudentManagementPage = () => {
     });
   };
 
-  const handleEdit = (student) => {
+  const handleEdit = (student, e) => {
+    e.stopPropagation();
     setEditingStudent(student);
   };
 
   const handleUpdate = (studentId, values) => {
-    axios
+    axiosMain
       .put(`/student/${studentId}`, values)
       .then(() => {
         message.success('Student updated successfully');
@@ -124,7 +128,7 @@ const StudentManagementPage = () => {
   };
 
   const handleCreateNewStudent = (values) => {
-    axios
+    axiosMain
       .post('/student', values)
       .then(() => {
         message.success('Student added successfully');
@@ -150,17 +154,15 @@ const StudentManagementPage = () => {
       key: 'student_id',
     },
     {
-      title: 'Avatar',
+      title: 'Image',
       key: 'avatar',
       render: (text, record) => (
         <Avatar
-          src={
-            record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined
-          }
-          icon={!record.avatar_url && <UserOutlined />}
+          src={record.avatar_url ? `${BASE_URL}${record.avatar_url}` : undefined}
           alt="avatar"
           size={50}
           style={{ verticalAlign: 'middle' }}
+          icon={!record.avatar_url && <UserOutlined />}
           onError={() => {
             return false;
           }}
@@ -193,7 +195,7 @@ const StudentManagementPage = () => {
       key: 'phone',
     },
     {
-      title: 'gender',
+      title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
     },
@@ -205,14 +207,14 @@ const StudentManagementPage = () => {
           <Tooltip title="Edit">
             <Button
               icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
+              onClick={(e) => handleEdit(record, e)}
               style={{ marginRight: 8 }}
             />
           </Tooltip>
           <Tooltip title="Delete">
             <Button
               icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.student_id)}
+              onClick={(e) => handleDelete(record.student_id, e)}
               danger
             />
           </Tooltip>
@@ -220,6 +222,11 @@ const StudentManagementPage = () => {
       ),
     },
   ];
+
+  const onRowClick = (record) => {
+    navigate(`/admin/students/${record.student_id}/pictures`);
+  };
+
   return (
     <Layout>
       <div className="container-fluid container-fluid-custom">
@@ -262,6 +269,9 @@ const StudentManagementPage = () => {
             ...student,
             key: index,
           }))}
+          onRow={(record) => ({
+            onClick: () => onRowClick(record),
+          })}
         />
         <AddStudentModal
           visible={isAddModalVisible}
@@ -279,6 +289,6 @@ const StudentManagementPage = () => {
       </div>
     </Layout>
   );
-};
+}
 
 export default StudentManagementPage;

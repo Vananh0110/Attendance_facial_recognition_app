@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from '../../api/axios';
+import {axiosMain} from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
@@ -13,7 +13,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/user/login', {
+      const response = await axiosMain.post('/user/login', {
         email: email,
         password: password,
       });

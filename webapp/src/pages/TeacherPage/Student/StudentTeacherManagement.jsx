@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Teacher/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import * as XLSX from 'xlsx';
 import {
   Button,
@@ -31,6 +32,7 @@ const StudentTeacherManagement = () => {
   const [uploading, setUploading] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStudent();
@@ -38,7 +40,7 @@ const StudentTeacherManagement = () => {
 
   const fetchStudent = async () => {
     try {
-      const response = await axios.get('/student/all');
+      const response = await axiosMain.get('/student/all');
       console.log(response.data);
       setStudents(response.data);
     } catch (error) {
@@ -52,7 +54,7 @@ const StudentTeacherManagement = () => {
 
     setUploading(true);
 
-    axios
+    axiosMain
       .post('/student/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -86,11 +88,12 @@ const StudentTeacherManagement = () => {
     );
   });
 
-  const handleDelete = (studentId) => {
+  const handleDelete = (studentId, e) => {
+    e.stopPropagation();
     Modal.confirm({
       title: 'Are you sure delete this student?',
       onOk() {
-        axios
+        axiosMain
           .delete(`/student/${studentId}`)
           .then(() => {
             message.success('Student deleted successfully');
@@ -106,12 +109,13 @@ const StudentTeacherManagement = () => {
     });
   };
 
-  const handleEdit = (student) => {
+  const handleEdit = (student, e) => {
+    e.stopPropagation();
     setEditingStudent(student);
   };
 
   const handleUpdate = (studentId, values) => {
-    axios
+    axiosMain
       .put(`/student/${studentId}`, values)
       .then(() => {
         message.success('Student updated successfully');
@@ -124,7 +128,7 @@ const StudentTeacherManagement = () => {
   };
 
   const handleCreateNewStudent = (values) => {
-    axios
+    axiosMain
       .post('/student', values)
       .then(() => {
         message.success('Student added successfully');
@@ -191,7 +195,7 @@ const StudentTeacherManagement = () => {
       key: 'phone',
     },
     {
-      title: 'gender',
+      title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
     },
@@ -203,14 +207,14 @@ const StudentTeacherManagement = () => {
           <Tooltip title="Edit">
             <Button
               icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
+              onClick={(e) => handleEdit(record, e)}
               style={{ marginRight: 8 }}
             />
           </Tooltip>
           <Tooltip title="Delete">
             <Button
               icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.student_id)}
+              onClick={(e) => handleDelete(record.student_id, e)}
               danger
             />
           </Tooltip>
@@ -218,6 +222,11 @@ const StudentTeacherManagement = () => {
       ),
     },
   ];
+
+  const onRowClick = (record) => {
+    navigate(`/teacher/students/${record.student_id}/pictures`);
+  };
+
   return (
     <Layout>
       <div className="container-fluid container-fluid-custom">
@@ -260,6 +269,9 @@ const StudentTeacherManagement = () => {
             ...student,
             key: index,
           }))}
+          onRow={(record) => ({
+            onClick: () => onRowClick(record),
+          })}
         />
         <AddStudentModal
           visible={isAddModalVisible}

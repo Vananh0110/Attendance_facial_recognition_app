@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Admin/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import { message, Row, Col, Card, Input } from 'antd';
 
 const ReportAttendancePage = () => {
@@ -28,7 +28,7 @@ const ReportAttendancePage = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('/course/all');
+      const response = await axiosMain.get('/course/all');
       console.log(response.data);
       setCourses(response.data);
     } catch (error) {

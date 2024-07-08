@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Teacher/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 import {
   message,
@@ -42,7 +42,7 @@ const TeacherAttendancePage = () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userId = user.user_id;
     try {
-      const response = await axios.get('/class/all');
+      const response = await axiosMain.get('/class/all');
 
       const filteredData = response.data.filter(
         (cls) => cls.user_id === userId

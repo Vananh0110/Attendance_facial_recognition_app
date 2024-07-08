@@ -7,7 +7,7 @@ import {
   FileExcelOutlined,
 } from '@ant-design/icons';
 import Layout from '../../../components/Admin/Layout';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import '../../../App.css';
 import * as XLSX from 'xlsx';
 
@@ -30,15 +30,15 @@ const ReportAttendanceDetail = () => {
   }, [classId]);
 
   const fetchClassInfo = async () => {
-    const studentData = await axios.get(
+    const studentData = await axiosMain.get(
       `/studentClass/getStudentInClass/${classId}`
     );
     setStudents(studentData.data);
 
-    const scheduleData = await axios.get(`/class/${classId}/schedule`);
+    const scheduleData = await axiosMain.get(`/class/${classId}/schedule`);
     setSchedule(scheduleData.data);
 
-    const attendanceData = await axios.get(`/attendance/class/${classId}`);
+    const attendanceData = await axiosMain.get(`/attendance/class/${classId}`);
     const attendanceMap = {};
     attendanceData.data.forEach((att) => {
       const date = new Date(att.date_attended);
@@ -110,7 +110,7 @@ const ReportAttendanceDetail = () => {
         method === 'put' ? `/attendance/${studentClassId}` : '/attendance';
 
       try {
-        await axios[method](url, {
+        await axiosMain[method](url, {
           student_class_id: studentClassId,
           date_attended: date,
           time_attended: new Date().toLocaleTimeString('en-GB', {

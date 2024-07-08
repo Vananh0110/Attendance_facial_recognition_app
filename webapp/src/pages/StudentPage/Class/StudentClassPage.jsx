@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../components/Student/Layout';
 import '../../../App.css';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import moment from 'moment';
 import { message, Table, Card, Switch, Row, Col, Input } from 'antd';
 
@@ -31,7 +31,7 @@ const StudentClassPage = () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userId = user.user_id;
     try {
-      const response = await axios.get(`/studentClass/getClass/${userId}`);
+      const response = await axiosMain.get(`/studentClass/getClass/${userId}`);
       setClasses(response.data);
     } catch (error) {
       console.error('Failed to fetch classes:', error);

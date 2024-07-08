@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import { Table, Button, Tag, Avatar, Modal, Input } from 'antd';
 import {
   UserOutlined,
@@ -27,9 +27,9 @@ const StudentReportClassDetail = () => {
   const fetchClassInfo = async () => {
     try {
       const responses = await Promise.all([
-        axios.get(`/studentClass/getStudentInClass/${classId}`),
-        axios.get(`/class/${classId}/schedule`),
-        axios.get(`/attendance/class/${classId}`),
+        axiosMain.get(`/studentClass/getStudentInClass/${classId}`),
+        axiosMain.get(`/class/${classId}/schedule`),
+        axiosMain.get(`/attendance/class/${classId}`),
       ]);
       setStudents(responses[0].data);
       setSchedule(responses[1].data);

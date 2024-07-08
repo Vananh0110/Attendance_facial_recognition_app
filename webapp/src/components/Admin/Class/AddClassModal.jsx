@@ -12,7 +12,7 @@ import {
   Col,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import axios from '../../../api/axios';
+import {axiosMain} from '../../../api/axios';
 import AddCourseModal from '../Course/AddCourseModal';
 import AddTeacherModal from '../Teacher/AddTeacherModal';
 
@@ -34,7 +34,7 @@ const AddClassModal = ({ visible, onClose, onCreate }) => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('/course/all');
+      const response = await axiosMain.get('/course/all');
       setCourses(response.data);
     } catch (error) {
       console.error('Failed to fetch courses:', error);
@@ -43,7 +43,7 @@ const AddClassModal = ({ visible, onClose, onCreate }) => {
 
   const fetchTeachers = async () => {
     try {
-      const response = await axios.get('/teacher/all');
+      const response = await axiosMain.get('/teacher/all');
       setTeachers(response.data);
     } catch (error) {
       console.error('Failed to fetch teachers:', error);
@@ -51,7 +51,7 @@ const AddClassModal = ({ visible, onClose, onCreate }) => {
   };
 
   const handleCreateNewCourse = (values) => {
-    axios
+    axiosMain
       .post('/course', values)
       .then(() => {
         message.success('course added successfully');
@@ -63,7 +63,7 @@ const AddClassModal = ({ visible, onClose, onCreate }) => {
   };
 
   const handleCreateNewTeacher = (values) => {
-    axios
+    axiosMain
       .post('/teacher', values)
       .then(() => {
         message.success('Teacher added successfully');
