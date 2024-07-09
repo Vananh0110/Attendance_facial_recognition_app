@@ -32,8 +32,13 @@ const FaceRecognitionAttendance = ({ route }) => {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setCameraPermission(status === 'granted');
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission required',
+          'We need your permission to access the camera.'
+        );
+      }
       const { status: imageStatus } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (imageStatus !== 'granted') {
@@ -54,7 +59,7 @@ const FaceRecognitionAttendance = ({ route }) => {
       );
       setImages(response.data.images);
     } catch (error) {
-      console.error('Failed to fetch images');
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -63,6 +68,24 @@ const FaceRecognitionAttendance = ({ route }) => {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      const newImages = result.assets.map((asset) => ({
+        uri: asset.uri,
+        name: asset.fileName || `image_${Date.now()}.jpg`,
+      }));
+      setImages([...images, ...newImages]);
+      await uploadImages(newImages);
+    }
+  };
+
+  const captureImage = async () => {
+    let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 1,
     });
@@ -193,12 +216,12 @@ const FaceRecognitionAttendance = ({ route }) => {
       </Appbar.Header>
       <View style={styles.container}>
         <View style={styles.buttonContainer}>
-        <Tooltip title="Upload Images To Attendance">
+          <Tooltip title="Capture Image">
             <IconButton
               icon="camera"
               color="#00B0FF"
               size={30}
-              onPress={pickImage}
+              onPress={captureImage}
               style={styles.iconButton}
             />
           </Tooltip>
@@ -297,7 +320,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'ffffff',
+    backgroundColor: '#ffffff',
   },
   fullImage: {
     width: '90%',

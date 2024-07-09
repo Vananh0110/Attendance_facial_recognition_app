@@ -19,25 +19,21 @@ def load_embeddings(embeddings_folder):
     return np.array(X), np.array(Y)
 
 if __name__ == "__main__":
-    # Tải dữ liệu huấn luyện
     X, Y = load_embeddings('embeddings')
 
-    # Mã hóa nhãn
     encoder = LabelEncoder()
     Y = encoder.fit_transform(Y)
-    
-    # Chia dữ liệu thành tập huấn luyện và tập kiểm tra
+
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.25, random_state=42)
 
-    # Huấn luyện mô hình SVM
+
     model = SVC(kernel='linear', probability=True)
     model.fit(X_train, Y_train)
 
-    # Đánh giá mô hình
+
     ypreds_train = model.predict(X_train)
     ypreds_test = model.predict(X_test)
 
-    # Tính các chỉ số đánh giá
     train_accuracy = accuracy_score(Y_train, ypreds_train)
     test_accuracy = accuracy_score(Y_test, ypreds_test)
 
@@ -59,7 +55,6 @@ if __name__ == "__main__":
     print("Training F1 Score:", train_f1)
     print("Testing F1 Score:", test_f1)
 
-    # Lưu mô hình và encoder
     os.makedirs('models', exist_ok=True)
     with open('models/svm_model.pkl', 'wb') as f:
         pickle.dump(model, f)

@@ -180,12 +180,10 @@ def init_routes(app):
             class_id = request.json['class_id']
             date = datetime.strptime(request.json['date'], '%Y-%m-%d').date()
 
-            # Predict attendance for all images in the specified folder
             attendance_folder = os.path.join(current_app.config['UPLOAD_ATTENDANCE_FOLDER'], str(class_id), str(date))
             if not os.path.exists(attendance_folder):
                 return jsonify({'error': 'Attendance folder not found'}), 400
 
-            # Fetch all student ids in the class
             student_classes = StudentClass.query.filter_by(class_id=class_id).all()
             student_ids = [sc.student_id for sc in student_classes]
             student_class_map = {sc.student_id: sc.student_class_id for sc in student_classes}
@@ -193,17 +191,15 @@ def init_routes(app):
             X_train = []
             y_train = []
 
-            # Load embeddings for all students in the class
             for student_id in student_ids:
                 embeddings_file = os.path.join('embeddings', f'{student_id}.npz')
                 if not os.path.exists(embeddings_file):
-                    continue  # Bỏ qua nếu không tìm thấy file nhúng của sinh viên này
+                    continue
 
                 data = np.load(embeddings_file)
                 X_train.extend(data['embeddings'])
                 y_train.extend(data['labels'])
 
-            # Load model and encoder
             model_file = 'models/svm_model.pkl'
             encoder_file = 'models/svm_encoder.pkl'
             with open(model_file, 'rb') as f:
@@ -213,7 +209,6 @@ def init_routes(app):
 
             present_student_ids = set()
 
-            # Process each image and predict
             for img_file in os.listdir(attendance_folder):
                 img_path = os.path.join(attendance_folder, img_file)
                 embeddings = get_embeddings(img_path)
@@ -229,26 +224,44 @@ def init_routes(app):
                     student_id = int(predicted_label)
                     if student_id in student_class_map:
                         present_student_ids.add(student_class_map[student_id])
-                        new_attendance = Attendance(
+                        attendance_record = Attendance.query.filter_by(
                             student_class_id=student_class_map[student_id],
-                            date_attended=date,
-                            time_attended=datetime.now().strftime('%H:%M'),
-                            status='P',
-                            attendance_type='face'
-                        )
-                        db.session.add(new_attendance)
+                            date_attended=date
+                        ).first()
+                        if attendance_record:
+                            attendance_record.status = 'P'
+                            attendance_record.time_attended = datetime.now().strftime('%H:%M')
+                        else:
+                            new_attendance = Attendance(
+                                student_class_id=student_class_map[student_id],
+                                date_attended=date,
+                                time_attended=datetime.now().strftime('%H:%M'),
+                                status='P',
+                                attendance_type='face'
+                            )
+                            db.session.add(new_attendance)
 
             # Mark absent students
             for student_class in student_classes:
                 if student_class.student_class_id not in present_student_ids:
-                    new_attendance = Attendance(
+                    attendance_record = Attendance.query.filter_by(
                         student_class_id=student_class.student_class_id,
-                        date_attended=date,
-                        time_attended=datetime.now().strftime('%H:%M'),
-                        status='UA',
-                        attendance_type='face'
-                    )
-                    db.session.add(new_attendance)
+                        date_attended=date
+                    ).first()
+                    if attendance_record:
+                        # Update existing attendance record
+                        attendance_record.status = 'UA'
+                        attendance_record.time_attended = datetime.now().strftime('%H:%M')
+                    else:
+                        # Create new attendance record
+                        new_attendance = Attendance(
+                            student_class_id=student_class.student_class_id,
+                            date_attended=date,
+                            time_attended=datetime.now().strftime('%H:%M'),
+                            status='UA',
+                            attendance_type='face'
+                        )
+                        db.session.add(new_attendance)
 
             db.session.commit()
 
